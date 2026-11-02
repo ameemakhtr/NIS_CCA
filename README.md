@@ -75,7 +75,6 @@ NIS_CCA/
 ├── test_cca.py                          # Automated Unit & Verification Test Suite (7 Tests)
 ├── challenge_dataset.json               # Exported 10 Challenge Pairs with Ground Truth
 ├── ned_logo_1.png                       # NED University Official Emblem
-├── NIS_CCA_Review_Package.zip           # Complete Offline Submission Review Archive
 └── README.md                            # Repository Documentation & Execution Guide
 ```
 
