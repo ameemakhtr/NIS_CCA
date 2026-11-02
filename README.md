@@ -19,13 +19,13 @@ This repository contains the complete implementation, cryptanalysis engine, auto
 **Course:** CT-486: Network and Information Security | **Batch:** 2023 | **Program:** Final Year - Cyber Security  
 **Instructor:** Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)  
 
-| S.No | Student Name | Roll Number | GitHub Profile | Assigned Role |
-| :---: | :--- | :---: | :---: | :--- |
-| 1 | **Mr. Hamza Saleem** | CR-23009 | [@HamzaSaleem56](https://github.com/HamzaSaleem56) | Implementation & Benchmarking Specialist |
-| 2 | **Mr. Ameem Akhtar** | CR-23013 | [@ameemakhtr](https://github.com/ameemakhtr) | Lead Architect & Cryptanalyst |
-| 3 | **Mr. Minhal Rizvi** | CR-23017 | [@Minhal128](https://github.com/Minhal128) | Security Engineer (Blue Team) |
-| 4 | **Mr. Muhammad Usman** | CR-23038 | [@Daedalus46](https://github.com/Daedalus46) | Algebraic Analyst (Red Team) |
-| 5 | **Mr. Maaz Wasim** | CR-23041 | [@maazw](https://github.com/maazw) | QA & Verification Lead |
+| S.No | Student Name | Roll Number | GitHub Profile |
+| :---: | :--- | :---: | :---: |
+| 1 | **Mr. Hamza Saleem** | CR-23009 | [@HamzaSaleem56](https://github.com/HamzaSaleem56) |
+| 2 | **Mr. Ameem Akhtar** | CR-23013 | [@ameemakhtr](https://github.com/ameemakhtr) |
+| 3 | **Mr. Minhal Rizvi** | CR-23017 | [@Minhal128](https://github.com/Minhal128) |
+| 4 | **Mr. Muhammad Usman** | CR-23038 | [@Daedalus46](https://github.com/Daedalus46) |
+| 5 | **Mr. Maaz Wasim** | CR-23041 | [@maazw](https://github.com/maazw) |
 
 ---
 

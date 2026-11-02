@@ -372,7 +372,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
     story.append(t_a2)
-    story.append(Spacer(1, 4))
+    story.append(PageBreak())
 
     # Deliverable 3: Keys, 5x5 Matrix, Special Rules
     story.append(Paragraph("<b>Deliverable 3 – Secret Keys, 5x5 Keyed Matrix & Alphabet Rules:</b>", sub_heading))
@@ -529,7 +529,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_trace)
-    story.append(Spacer(1, 5))
+    story.append(PageBreak())
 
     # =========================================================
     # SECTION 3: RED TEAM CRYPTANALYSIS & PROOFS
@@ -663,7 +663,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_rec)
-    story.append(Spacer(1, 5))
+    story.append(PageBreak())
 
     # Deliverable 9 & 10: Verification Table (Wrapped & Spaced Ciphertexts)
     story.append(Paragraph("<b>Deliverable 9 & 10 – Verification Evidence & Round-Trip Plaintext Recovery:</b>", sub_heading))
@@ -758,7 +758,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "<b>Asymptotic Scaling:</b> Time complexity is strictly linear <i>O(N)</i> across all three stages (Playfair: <i>N/2</i> lookups; Vigenère: <i>N</i> modular shifts; ADI-PDD: <i>N/4</i> swaps and <i>N</i> affine operations). Memory is <i>O(N)</i> with constant <i>O(1)</i> matrix storage.",
         body_style
     ))
-    story.append(Spacer(1, 5))
+    story.append(PageBreak())
 
     # =========================================================
     # SECTION 5: SUGGESTIONS FOR IMPROVEMENT
@@ -789,50 +789,13 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(Spacer(1, 5))
 
     # =========================================================
-    # SECTION 6: CODE SUBMISSION & TEAM CONTRIBUTORS
+    # SECTION 6: CODE SUBMISSION & EXECUTION DETAILS
     # =========================================================
     story.append(Paragraph("6. Code Submission & Execution Details", section_heading))
     story.append(Paragraph(
         "All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at: <b><u>https://github.com/ameemakhtr/NIS_CCA</u></b>",
         body_style
     ))
-
-    story.append(Paragraph("<b>5-Student Project Team Contributors (Roll-Number Ordered):</b>", sub_heading))
-    team_raw = [
-        ["Seat No.", "Student Name", "GitHub Profile", "Primary Responsibility Area"],
-        ["CR-23009", "Mr. Hamza Saleem", "@HamzaSaleem56", "Implementation Specialist (Pipeline Decoupling & Benchmarks)"],
-        ["CR-23013", "Mr. Ameem Akhtar", "@ameemakhtr", "Lead Architect & Cryptanalyst (Architecture, Tier 3 ADI-PDD, Red Team Solver)"],
-        ["CR-23017", "Mr. Minhal Rizvi", "@Minhal128", "Security Engineer (Tier 1 Playfair Matrix, Tier 2 Vigenère, Dataset Generation)"],
-        ["CR-23038", "Mr. Muhammad Usman", "@Daedalus46", "Algebraic Analyst (Statistical Profiling, IoC Analysis, Error Proofs)"],
-        ["CR-23041", "Mr. Maaz Wasim", "@maazw", "QA & Verification Lead (Automated Test Suite test_cca.py, Plaintext Inversion Testing)"]
-    ]
-    team_data = []
-    for r_idx, row in enumerate(team_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 0:
-                p_row.append(Paragraph(f"<b>{val}</b>", td_center))
-            elif c_idx == 1:
-                p_row.append(Paragraph(f"<b>{val}</b>", td_style))
-            elif c_idx == 2:
-                p_row.append(Paragraph(val, td_code))
-            else:
-                p_row.append(Paragraph(val, td_style))
-        team_data.append(p_row)
-
-    t_team = Table(team_data, colWidths=[0.85*inch, 1.55*inch, 1.4*inch, 3.1*inch])
-    t_team.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ('TOPPADDING', (0, 0), (-1, -1), 2),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_team)
     story.append(Spacer(1, 4))
 
     # Execution Commands Box
