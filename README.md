@@ -6,7 +6,7 @@
 [![Cryptography](https://img.shields.io/badge/Cryptography-Classical%20Product%20Cipher-darkgreen.svg)]()
 [![Design](https://img.shields.io/badge/Primitives-Playfair%20%2B%20Vigen%C3%A8re%20%2B%20ADI--PDD-orange.svg)]()
 [![University](https://img.shields.io/badge/NED%20University-CS%20%26%20IT%20Department-red.svg)](https://www.neduet.edu.pk/)
-[![Batch](https://img.shields.io/badge/Batch-2022--2023-purple.svg)]()
+[![Batch](https://img.shields.io/badge/Batch-2023-purple.svg)]()
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 This repository contains the complete implementation, cryptanalysis engine, automated test suite, empirical benchmarks, and publication-grade reports for the **Complex Computing Activity (CCA)** in **CT-486: Network and Information Security** at the **Department of Computer Science & Information Technology, NED University of Engineering & Technology, Karachi**.
@@ -16,17 +16,16 @@ This repository contains the complete implementation, cryptanalysis engine, auto
 ## 👥 Project Team & Contributors
 
 *Department of Computer Science & Information Technology, NED University of Engineering & Technology, Karachi*  
-**Course:** CT-486: Network and Information Security | **Batch:** 2022–2023 | **Program:** Final Year - Cyber Security  
+**Course:** CT-486: Network and Information Security | **Batch:** 2023 | **Program:** Final Year - Cyber Security  
 **Instructor:** Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)  
-**Assessment Type:** Complex Computing Activity (CCA) | **Total Marks:** 10 | **Group Size:** 05 Students  
 
 | S.No | Student Name | Roll Number | GitHub Profile | Assigned Role |
 | :---: | :--- | :---: | :---: | :--- |
-| 1 | **Mr. Ameem Akhtar** | CR-23013 | [@ameemakhtr](https://github.com/ameemakhtr) | Lead Architect & Cryptanalyst |
-| 2 | **Mr. Minhal Rizvi** | CR-23017 | [@Minhal128](https://github.com/Minhal128) | Security Engineer (Blue Team) |
-| 3 | **Mr. Muhammad Usman** | CR-23038 | [@Daedalus46](https://github.com/Daedalus46) | Algebraic Analyst (Red Team) |
-| 4 | **Mr. Maaz Wasim** | CR-23041 | [@maazw](https://github.com/maazw) | QA & Verification Lead |
-| 5 | **Mr. Hamza Saleem** | CR-23009 | [@HamzaSaleem56](https://github.com/HamzaSaleem56) | Implementation & Benchmarking Specialist |
+| 1 | **Mr. Hamza Saleem** | CR-23009 | [@HamzaSaleem56](https://github.com/HamzaSaleem56) | Implementation & Benchmarking Specialist |
+| 2 | **Mr. Ameem Akhtar** | CR-23013 | [@ameemakhtr](https://github.com/ameemakhtr) | Lead Architect & Cryptanalyst |
+| 3 | **Mr. Minhal Rizvi** | CR-23017 | [@Minhal128](https://github.com/Minhal128) | Security Engineer (Blue Team) |
+| 4 | **Mr. Muhammad Usman** | CR-23038 | [@Daedalus46](https://github.com/Daedalus46) | Algebraic Analyst (Red Team) |
+| 5 | **Mr. Maaz Wasim** | CR-23041 | [@maazw](https://github.com/maazw) | QA & Verification Lead |
 
 ---
 

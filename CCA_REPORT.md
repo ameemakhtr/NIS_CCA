@@ -7,7 +7,7 @@
 **Course Title:** Network and Information Security  
 **Department:** Department of Computer Science & Information Technology  
 **Institution:** NED University of Engineering & Technology, Karachi, Pakistan  
-**Class & Batch:** Final Year - Cyber Security | Batch: 2022–2023  
+**Class & Batch:** Final Year - Cyber Security | Batch: 2023  
 **Instructor:** Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)  
 **Total Marks:** 10  
 **Group Size:** 05 Members  
@@ -17,13 +17,13 @@
 
 ## Student Team Details
 
-| Seat Number | Student Name | Assigned Role | Primary Contribution Area |
-| :---: | :--- | :--- | :--- |
-| **CR-23013** | **Mr. Ameem Akhtar** | Lead Architect & Cryptanalyst | System Architecture, Tier 3 (ADI-PDD) Design, Red Team Algebraic Solver |
-| **CR-23017** | **Mr. Minhal Rizvi** | Security Engineer (Blue Team) | Tier 1 (Playfair) & Tier 2 (Vigenère), Challenge Dataset Generation |
-| **CR-23038** | **Mr. Muhammad Usman** | Algebraic Analyst (Red Team) | Statistical Profiling, IoC Analysis, Mathematical Error Proofs for Corrupted Pairs |
-| **CR-23041** | **Mr. Maaz Wasim** | QA & Verification Lead | Automated Test Suite (`test_cca.py`), Round-Trip Inversion Audit |
-| **CR-23009** | **Mr. Hamza Saleem** | Implementation Specialist | Pipeline Decoupling, Benchmarking, Complexity Profiling & Verification |
+| Seat Number | Student Name | GitHub Profile | Primary Contribution Area |
+| :---: | :--- | :---: | :--- |
+| **CR-23009** | **Mr. Hamza Saleem** | [@HamzaSaleem56](https://github.com/HamzaSaleem56) | Implementation Specialist (Pipeline Decoupling, Benchmarking, Complexity Profiling) |
+| **CR-23013** | **Mr. Ameem Akhtar** | [@ameemakhtr](https://github.com/ameemakhtr) | Lead Architect & Cryptanalyst (System Architecture, Tier 3 ADI-PDD, Red Team Solver) |
+| **CR-23017** | **Mr. Minhal Rizvi** | [@Minhal128](https://github.com/Minhal128) | Security Engineer (Tier 1 Playfair Matrix, Tier 2 Vigenère, Challenge Dataset) |
+| **CR-23038** | **Mr. Muhammad Usman** | [@Daedalus46](https://github.com/Daedalus46) | Algebraic Analyst (Statistical Profiling, IoC Analysis, Mathematical Error Proofs) |
+| **CR-23041** | **Mr. Maaz Wasim** | [@maazw](https://github.com/maazw) | QA & Verification Lead (Automated Test Suite `test_cca.py`, Round-Trip Inversion Audit) |
 
 ---
 
@@ -341,7 +341,7 @@ Empirical benchmarks were conducted over 50 iterations across varying payload si
 
 ---
 
-## 6. Suggestions for Improving Cipher Security
+## 6. Suggestions for Improving the Cipher's Security
 
 1. **Autokey Keystream Dynamic Scheduling:** Replace periodic Vigenère repetitions with an autokey mechanism ($K[i] = P[i - L_V]$) to eliminate keystream periodicity.
 2. **Non-Linear S-Box Insertion:** Introduce non-linear substitution (AES/DES S-box style) between Tier 2 and Tier 3 to break linear modular solvability over $\mathbb{Z}_{26}$.
@@ -350,25 +350,12 @@ Empirical benchmarks were conducted over 50 iterations across varying payload si
 
 ---
 
-## 7. Assessment Rubric Compliance (10 / 10 Marks)
+## 7. Code Submission & Execution Details
 
-| Rubric Deliverable | Target Requirement | Achieved Deliverable Evidence | Marks Awarded |
-| :--- | :--- | :--- | :---: |
-| **Deliverable 1 (1.0 M)** | Unique Name & Description | Al-Kindi Composite Cipher (KTCC), historical foundation | **1.0 / 1.0** |
-| **Deliverable 2 (1.0 M)** | Complete Encryption Sequence | Flow diagrams, pseudocode algorithms, mathematical definitions | **1.0 / 1.0** |
-| **Deliverable 3 (1.0 M)** | Keys, 5x5 Matrix & Rules | Complete 5x5 table (LABYRINTH), VALIANT, ADI-PDD params | **1.0 / 1.0** |
-| **Deliverable 4 (1.0 M)** | 10 Challenge Pairs (7/3) | Standardized table with exact 7 valid and 3 corrupted pairs | **1.0 / 1.0** |
-| **Deliverable 5 (1.0 M)** | Post-Challenge Explanation | Step-by-step trace table for Pair 1, frequency analysis | **1.0 / 1.0** |
-| **Deliverable 6 (1.0 M)** | Technique Identification | Length parity invariant proof, IoC table ($IC = 0.0388$) | **1.0 / 1.0** |
-| **Deliverable 7 (1.0 M)** | Identify 3 Corrupted Pairs | Rigorous mathematical proofs for Pairs 3, 6, and 9 | **1.0 / 1.0** |
-| **Deliverable 8 (1.0 M)** | Key Recovery & Decoupling | Full algebraic recovery of LABYRINTH, VALIANT, $\delta=3, \theta=7$ | **1.0 / 1.0** |
-| **Deliverable 9 (1.0 M)** | Inverted Decryption Pipeline | Complete reverse engine, algebraic bijectivity proof | **1.0 / 1.0** |
-| **Deliverable 10 (1.0 M)** | Verification & Plaintext Recovery | 100% round-trip decryption on 7 genuine pairs, automated test suite | **1.0 / 1.0** |
+All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at:  
+**Repository Link:** [https://github.com/ameemakhtr/NIS_CCA](https://github.com/ameemakhtr/NIS_CCA)
 
----
-
-## 8. Source Code Execution Guide
-
+### Automated Execution Commands:
 ```bash
 # 1. Run Complete Blue Team + Red Team Demonstration:
 python cca_main.py --all
@@ -379,20 +366,20 @@ python cca_main.py --red
 # 3. Inspect Blue Team Deliverables & Dataset:
 python cca_main.py --blue
 
-# 4. Run Automated Test Suite (7 Tests):
+# 4. Run Automated Test Suite (7/7 Tests Passing):
 python test_cca.py
 
 # 5. Interactive Encryption/Decryption Terminal:
 python cca_main.py --interactive
 
-# 6. Re-generate Publication-Grade PDF and DOCX Reports:
+# 6. Recompile Publication-Grade PDF and Word Reports:
 python build_report_pdf.py
 python build_report_docx.py
 ```
 
 ---
 
-## 9. Academic References
+## 8. Academic References
 
 1. Al-Kindi, Abu Yusuf Ya'qub ibn Ishaq (c. 850 CE). *Risalah fi Istikhraj al-Mu'amma* (*Manuscript on Deciphering Cryptographic Messages*). House of Wisdom, Baghdad.
 2. Shannon, Claude E. (1949). "Communication Theory of Secrecy Systems." *Bell System Technical Journal*, 28(4), 656–715.
