@@ -1,0 +1,223 @@
+{
+  "cipher_info": {
+    "name": "Chimera-Triad Composite Cipher (CT-486 CCA)",
+    "playfair_key": "LABYRINTH",
+    "vigenere_key": "VALIANT",
+    "delta": 3,
+    "theta": 7
+  },
+  "pairs": [
+    {
+      "pair_id": 1,
+      "plaintext": "DEFEND THE PERIMETER AT ONCE",
+      "cleaned_prepared": "DEFENDTHEPERIMETERATONCE",
+      "ciphertext": "MJEDKEZZENDOEKXNLBKMOGIT",
+      "length": 24
+    },
+    {
+      "pair_id": 2,
+      "plaintext": "ZERO TRUST ARCHITECTURE SECURES DATA",
+      "cleaned_prepared": "ZEROTRUSTARCHITECTURESECURESDATA",
+      "ciphertext": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF",
+      "length": 32
+    },
+    {
+      "pair_id": 3,
+      "plaintext": "CRYPTOGRAPHIC PROTOCOL FAILURE DETECTED",
+      "cleaned_prepared": "CRYPTOGRAPHICPROTOCOLFAILUREDETECTED",
+      "ciphertext": "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH",
+      "length": 36
+    },
+    {
+      "pair_id": 4,
+      "plaintext": "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY",
+      "cleaned_prepared": "INCIDENTRESPONSETEAMENGAGEDIMXMEDIATELYZ",
+      "ciphertext": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR",
+      "length": 40
+    },
+    {
+      "pair_id": 5,
+      "plaintext": "QUANTUM COMPUTING THREATENS TRADITIONAL RSA",
+      "cleaned_prepared": "QUANTUMCOMPUTINGTHREATENSTRADITIONALRSAZ",
+      "ciphertext": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP",
+      "length": 40
+    },
+    {
+      "pair_id": 6,
+      "plaintext": "MALWARE EXFILTRATING SENSITIVE AUDIT LOGS",
+      "cleaned_prepared": "MALWAREXEXFILTRATINGSENSITIVEAUDITLOGS",
+      "ciphertext": "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY",
+      "length": 38
+    },
+    {
+      "pair_id": 7,
+      "plaintext": "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC",
+      "cleaned_prepared": "FIREWALXLBLOCKSUNTRUSTEDNETWORKTRAFXFICZ",
+      "ciphertext": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL",
+      "length": 40
+    },
+    {
+      "pair_id": 8,
+      "plaintext": "AUTHENTICATION TOKEN EXPIRES SOON REFRESH",
+      "cleaned_prepared": "AUTHENTICATIONTOKENEXPIRESSOONREFRESHZ",
+      "ciphertext": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ",
+      "length": 38
+    },
+    {
+      "pair_id": 9,
+      "plaintext": "DENIAL OF SERVICE ATTACK FLOODS ROUTER",
+      "cleaned_prepared": "DENIALOFSERVICEATXTACKFLOXODSROUTERZ",
+      "ciphertext": "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF",
+      "length": 36
+    },
+    {
+      "pair_id": 10,
+      "plaintext": "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD",
+      "cleaned_prepared": "ELLIPTICCURVEDIGITALSIGNATURESTANDARDZ",
+      "ciphertext": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY",
+      "length": 38
+    }
+  ],
+  "ground_truth": [
+    {
+      "pair_id": 1,
+      "is_valid": true,
+      "genuine_ciphertext": "MJEDKEZZENDOEKXNLBKMOGIT",
+      "challenge_ciphertext": "MJEDKEZZENDOEKXNLBKMOGIT",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "DEFEND THE PERIMETER AT ONCE",
+        "prepared_plaintext": "DEFENDTHEPERIMETERATONCE",
+        "stage1_playfair": "EFGFIEHCFOKADUFNKABNVENK",
+        "stage2_vigenere": "ZFRNIRAXFZSAQNANVIBAOZNV",
+        "stage3_final": "MJEDKEZZENDOEKXNLBKMOGIT"
+      }
+    },
+    {
+      "pair_id": 2,
+      "is_valid": true,
+      "genuine_ciphertext": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF",
+      "challenge_ciphertext": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "ZERO TRUST ARCHITECTURE SECURES DATA",
+        "prepared_plaintext": "ZEROTRUSTARCHITECTURESECURESDATA",
+        "stage1_playfair": "VKASCBZMNBCKCNNFIHZLKOKNZLKOELNB",
+        "stage2_vigenere": "QKLACOSHNMKKPGIFTPZYDJKYHLXHZLYJ",
+        "stage3_final": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF"
+      }
+    },
+    {
+      "pair_id": 3,
+      "is_valid": false,
+      "genuine_ciphertext": "JPZOVJCVEJVBCASSAEWRNMGWMUUNSPRJTKDH",
+      "challenge_ciphertext": "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH",
+      "reason": "Tampered at index 5: changed 'J' to 'N' (+4 shift). Violates Playfair rectangle/row-column relation and Vigenere periodic congruence.",
+      "trace": {
+        "plaintext_raw": "CRYPTOGRAPHIC PROTOCOL FAILURE DETECTED",
+        "prepared_plaintext": "CRYPTOGRAPHICPROTOCOLFAILUREDETECTED",
+        "stage1_playfair": "KCBQNPKYBOCNTSASNPNSBDLNILAKEFNFIHFE",
+        "stage2_vigenere": "FCMYNCDTBZKNGLVSYXNFUYLYQLNDZFYNIUYZ",
+        "stage3_final": "JPZOVJCVEJVBCASSAEWRNMGWMUUNSPRJTKDH"
+      }
+    },
+    {
+      "pair_id": 4,
+      "is_valid": true,
+      "genuine_ciphertext": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR",
+      "challenge_ciphertext": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY",
+        "prepared_plaintext": "INCIDENTRESPONSETEAMENGAGEDIMXMEDIATELYZ",
+        "stage1_playfair": "NTINEFTHAKMQVEOKNFLOOEEYKFMDQUODMDBNDARX",
+        "stage2_vigenere": "ITTVESMCAVUQIXJKYNLBHZEJSFZWLUZLMQUIDLZX",
+        "stage3_final": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR"
+      }
+    },
+    {
+      "pair_id": 5,
+      "is_valid": true,
+      "genuine_ciphertext": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP",
+      "challenge_ciphertext": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "QUANTUM COMPUTING THREATENS TRADITIONAL RSA",
+        "prepared_plaintext": "QUANTUMCOMPUTINGTHREATENSTRADITIONALRSAZ",
+        "stage1_playfair": "MXNEIWSIPOMWHNHEHCAKBNOEPCLBMDHNVEBACZRV",
+        "stage2_vigenere": "HXYMIJLDPZUWUGCESKAXUIOPXCYUHDSVVRUVCKZV",
+        "stage3_final": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP"
+      }
+    },
+    {
+      "pair_id": 6,
+      "is_valid": false,
+      "genuine_ciphertext": "STZSRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY",
+      "challenge_ciphertext": "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY",
+      "reason": "Transposition parity violation: Characters at indices 2 and 3 (block 1, odd) were swapped instead of maintaining the Serpentine Digraph Inversion parity rule.",
+      "trace": {
+        "plaintext_raw": "MALWARE EXFILTRATING SENSITIVE AUDIT LOGS",
+        "prepared_plaintext": "MALWAREXEXFILTRATINGSENSITIVEAUDITLOGS",
+        "stage1_playfair": "OLBUBLGVGVDTBILBHNHEOKCONHNUONLMNHAMKQ",
+        "stage2_vigenere": "JLMCBYZQGGLTOBGBSVHRHFCZVHANJNWUNUTHKB",
+        "stage3_final": "STZSRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY"
+      }
+    },
+    {
+      "pair_id": 7,
+      "is_valid": true,
+      "genuine_ciphertext": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL",
+      "challenge_ciphertext": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC",
+        "prepared_plaintext": "FIREWALXLBLOCKSUNTRUSTEDNETWORKTRAFXFICZ",
+        "stage1_playfair": "DTAKVBYUAYAMKSMZTHLZPCFEEOFBSAFCLBGWDTKR",
+        "stage2_vigenere": "YTLSVORPAJIMXLHZEPLMIXFPMOSUNAQKLOZRDESR",
+        "stage3_final": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL"
+      }
+    },
+    {
+      "pair_id": 8,
+      "is_valid": true,
+      "genuine_ciphertext": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ",
+      "challenge_ciphertext": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "AUTHENTICATION TOKEN EXPIRES SOON REFRESH",
+        "prepared_plaintext": "AUTHENTICATIONTOKENEXPIRESSOONREFRESHZ",
+        "stage1_playfair": "LVHCOEHNNRHNVENPDFEOWQCLKOMPVEAKKBKOCX",
+        "stage2_vigenere": "GVSKORAINCPNIXIPONEBPLCWSOZIQELSKODJCI",
+        "stage3_final": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ"
+      }
+    },
+    {
+      "pair_id": 9,
+      "is_valid": false,
+      "genuine_ciphertext": "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZRPAU",
+      "challenge_ciphertext": "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF",
+      "reason": "Tail desynchronization: The last 4 ciphertext characters were arbitrarily shifted by +11 mod 26, causing algebraic stream failure and invalid digram reversal.",
+      "trace": {
+        "plaintext_raw": "DENIAL OF SERVICE ATTACK FLOODS ROUTER",
+        "prepared_plaintext": "DENIALOFSERVICEATXTACKFLOXODSROUTERZ",
+        "stage1_playfair": "EFTNBAPEOKAZNIONHWNBKSDBQVMEZCMVNFCR",
+        "stage2_vigenere": "ZFEVBNIZOVIZABJNSENODNDMYVZXUCXDNSVM",
+        "stage3_final": "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZRPAU"
+      }
+    },
+    {
+      "pair_id": 10,
+      "is_valid": true,
+      "genuine_ciphertext": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY",
+      "challenge_ciphertext": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "trace": {
+        "plaintext_raw": "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD",
+        "prepared_plaintext": "ELLIPTICCURVEDIGITALSIGNATURESTANDARDZ",
+        "stage1_playfair": "DAIDWFNIIZAZFEHDNHBAMCEHBNZLKONBIEBLKU",
+        "stage2_vigenere": "YATLWSGDIKIZSXCDYPBNFXESJNMEFOYJIRUGKF",
+        "stage3_final": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY"
+      }
+    }
+  ]
+}
