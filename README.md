@@ -61,13 +61,9 @@ In accordance with PEC / Washington Accord CLO3 (Design of Security Mechanisms),
 NIS_CCA/
 ├── build_report_pdf.py                  # Academic PDF Report Generator (ReportLab)
 ├── build_report_docx.py                 # Academic Word Report Generator (python-docx)
-├── export_cca_pdf.py                    # Wrapper for PDF Generation
-├── Complex_Computing_Activity_Report.pdf# Master Publication-Grade PDF Report (Times New Roman, TOC)
+├── Complex_Computing_Activity_Report.pdf# Master Publication-Grade PDF Report (Times New Roman)
 ├── Complex_Computing_Activity_Report.docx# Master Publication-Grade Word Document
-├── CCA_REPORT.pdf                       # Synchronized PDF Report
-├── CCA_REPORT.docx                      # Synchronized Word Report
-├── CCA_REPORT.md                        # Master Markdown Technical Report
-├── REPORT.md                            # Synchronized Technical Report (NIS_CCP style)
+├── REPORT.md                            # Comprehensive Markdown Audit & Technical Report
 ├── cca_cipher.py                        # Core Cipher Engine (Playfair + Vigenère + ADI-PDD)
 ├── cca_challenge.py                     # Challenge Dataset Generator (10 Pairs with 3 Traps)
 ├── cca_attack.py                        # Red Team Cryptanalysis & Automated Decoupling Suite

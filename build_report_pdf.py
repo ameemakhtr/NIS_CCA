@@ -8,14 +8,13 @@ Matches the exact academic style, structure, and density of NIS_CCP:
   - Clean Cover Page: Title, Subtitle, Final Year - Cyber Security, Batch: 2023, NED Logo
   - Group Members sorted by roll number: Hamza (09), Ameem (13), Minhal (17), Usman (38), Maaz (41)
   - Submitted to: Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)
-  - No redundant cover lines, no TOC page, no rubric self-grading table
+  - No redundant cover lines, no duplicate reports, no TOC page, no rubric self-grading table
+  - All table cells wrapped in Paragraphs with auto-wrapping, zero text overlap
   - Distinct bullet and numbered items on separate lines with proper indentation
   - 10 Deliverables fully documented across Blue Team & Red Team
-  - Mathematical formulations, Pseudocode boxes, 5x5 Matrix, Challenge Dataset, Error Proofs, Benchmarks
 """
 
 import os
-import shutil
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import (
     SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle, Image as RLImage, PageBreak, KeepTogether
@@ -26,6 +25,11 @@ from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def chunk_cipher(s: str, n: int = 4) -> str:
+    """Chunks long unspaced strings into blocks with spaces so ReportLab Paragraphs wrap cleanly."""
+    return " ".join([s[i:i+n] for i in range(0, len(s), n)])
 
 
 class NumberedCanvas(canvas.Canvas):
@@ -113,10 +117,10 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         'SectionHeading',
         parent=styles['Heading1'],
         fontName='Times-Bold',
-        fontSize=13.5,
-        leading=17,
-        spaceBefore=8,
-        spaceAfter=5,
+        fontSize=13,
+        leading=16.5,
+        spaceBefore=7,
+        spaceAfter=4,
         textColor=colors.HexColor("#1A252F"),
         keepWithNext=True
     )
@@ -125,10 +129,10 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         'SubHeading',
         parent=styles['Heading2'],
         fontName='Times-Bold',
-        fontSize=10.5,
-        leading=14,
-        spaceBefore=5,
-        spaceAfter=3,
+        fontSize=10,
+        leading=13.5,
+        spaceBefore=4,
+        spaceAfter=2,
         textColor=colors.HexColor("#2C3E50"),
         keepWithNext=True
     )
@@ -137,9 +141,9 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         'Body',
         parent=styles['Normal'],
         fontName='Times-Roman',
-        fontSize=9.2,
-        leading=13.2,
-        spaceAfter=4,
+        fontSize=8.8,
+        leading=12.4,
+        spaceAfter=3,
         alignment=4,  # Justify
         textColor=colors.HexColor("#222222")
     )
@@ -148,11 +152,11 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         'BulletStyle',
         parent=styles['Normal'],
         fontName='Times-Roman',
-        fontSize=9.0,
-        leading=12.8,
-        leftIndent=16,
-        firstLineIndent=-10,
-        spaceAfter=3,
+        fontSize=8.6,
+        leading=12.0,
+        leftIndent=14,
+        firstLineIndent=-9,
+        spaceAfter=2,
         alignment=4,
         textColor=colors.HexColor("#222222")
     )
@@ -161,22 +165,84 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         'NumberedStyle',
         parent=styles['Normal'],
         fontName='Times-Roman',
-        fontSize=9.0,
-        leading=12.8,
-        leftIndent=16,
-        firstLineIndent=-12,
-        spaceAfter=3,
+        fontSize=8.6,
+        leading=12.0,
+        leftIndent=14,
+        firstLineIndent=-10,
+        spaceAfter=2,
         alignment=4,
         textColor=colors.HexColor("#222222")
     )
 
-    code_style = ParagraphStyle(
-        'CodeStyle',
+    # Table Cell Typography Styles (Guarantees wrap and prevents text collisions)
+    th_style = ParagraphStyle(
+        'THStyle',
+        parent=styles['Normal'],
+        fontName='Times-Bold',
+        fontSize=7.8,
+        leading=9.8,
+        alignment=1,
+        textColor=colors.whitesmoke
+    )
+
+    td_style = ParagraphStyle(
+        'TDStyle',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=7.4,
+        leading=9.4,
+        alignment=0,  # Left
+        textColor=colors.HexColor("#222222")
+    )
+
+    td_center = ParagraphStyle(
+        'TDCenter',
+        parent=styles['Normal'],
+        fontName='Times-Roman',
+        fontSize=7.4,
+        leading=9.4,
+        alignment=1,  # Center
+        textColor=colors.HexColor("#222222")
+    )
+
+    td_bold = ParagraphStyle(
+        'TDBold',
+        parent=styles['Normal'],
+        fontName='Times-Bold',
+        fontSize=7.4,
+        leading=9.4,
+        alignment=0,
+        textColor=colors.HexColor("#1A252F")
+    )
+
+    td_code = ParagraphStyle(
+        'TDCode',
         parent=styles['Normal'],
         fontName='Courier',
-        fontSize=7.5,
-        leading=9.5,
+        fontSize=6.8,
+        leading=8.6,
+        alignment=0,
         textColor=colors.HexColor("#1A252F")
+    )
+
+    td_danger = ParagraphStyle(
+        'TDDanger',
+        parent=styles['Normal'],
+        fontName='Times-Bold',
+        fontSize=7.4,
+        leading=9.4,
+        alignment=1,
+        textColor=colors.HexColor("#B91C1C")
+    )
+
+    td_success = ParagraphStyle(
+        'TDSuccess',
+        parent=styles['Normal'],
+        fontName='Times-Bold',
+        fontSize=7.4,
+        leading=9.4,
+        alignment=1,
+        textColor=colors.HexColor("#15803D")
     )
 
     story = []
@@ -192,13 +258,13 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(Paragraph("Final Year - Cyber Security", dept_style))
     story.append(Spacer(1, 4))
     story.append(Paragraph("Batch: 2023", dept_style))
-    story.append(Spacer(1, 22))
+    story.append(Spacer(1, 24))
 
     # NED University Crest / Logo
     logo_path = os.path.join(SCRIPT_DIR, "ned_logo_1.png")
     if os.path.exists(logo_path):
         story.append(RLImage(logo_path, width=2.0*inch, height=2.0*inch))
-    story.append(Spacer(1, 22))
+    story.append(Spacer(1, 24))
 
     story.append(Paragraph("Group Members:", subtitle_style))
     story.append(Spacer(1, 10))
@@ -219,7 +285,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     ]))
     story.append(t_members)
 
-    story.append(Spacer(1, 30))
+    story.append(Spacer(1, 32))
     story.append(Paragraph("<b>Submitted to:</b> Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)", body_style))
     story.append(Paragraph("<b>Submission Date:</b> November 08, 2026", body_style))
     story.append(PageBreak())
@@ -227,7 +293,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 1: ABSTRACT & PROBLEM FORMULATION
     # =========================================================
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
     story.append(Paragraph("1. Abstract & Problem Formulation", section_heading))
     
     story.append(Paragraph(
@@ -244,7 +310,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     ))
 
     story.append(Paragraph("<b>Core Deliverables Summary Matrix:</b>", sub_heading))
-    summary_data = [
+    summary_raw = [
         ["Metric / Dimension", "Blue Team (Architects)", "Red Team (Cryptanalysts)", "Audit Outcome"],
         ["Target Cipher", "Al-Kindi Composite Cipher (KTCC)", "Al-Kindi Composite Cipher (KTCC)", "100% Matched"],
         ["Cascaded Layers", "Playfair (5x5) + Vigenère + ADI-PDD", "3 Tiers Decoupled Algebraically", "Fully Isolated"],
@@ -253,21 +319,32 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Poisoned Pairs", "Pairs 3, 6, and 9 Poisoned", "Isolated IDs: 3, 6, and 9", "100% Precision"],
         ["Decryption Success", "Encryption Authority", "100.0% Round-Trip Fidelity", "Flawless Inversion"]
     ]
-    t_summary = Table(summary_data, colWidths=[1.8*inch, 2.0*inch, 2.0*inch, 1.2*inch])
+    summary_data = []
+    for r_idx, row in enumerate(summary_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_bold))
+            elif c_idx == 3:
+                p_row.append(Paragraph(val, td_center))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        summary_data.append(p_row)
+
+    t_summary = Table(summary_data, colWidths=[1.4*inch, 1.85*inch, 2.25*inch, 1.4*inch])
     t_summary.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (1, 1), (2, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
+        ('TOPPADDING', (0, 0), (-1, -1), 3),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_summary)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # =========================================================
     # SECTION 2: BLUE TEAM CIPHER DESIGN & SPECIFICATION
@@ -304,15 +381,15 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "5. <b>Tier 3A:</b> For block <i>b</i> = 0 to (<i>N</i>/2)-1: If <i>b</i> mod 2 == 0: Swap(<i>S</i><sub>2</sub>[2<i>b</i>], <i>S</i><sub>2</sub>[2<i>b</i>+1])<br/>"
         "6. <b>Tier 3B:</b> For <i>i</i> = 0 to <i>N</i>-1: <i>C</i>[<i>i</i>] &larr; (<i>S</i><sub>2</sub>[<i>i</i>] + (3&middot;<i>i</i> + 7)) mod 26; Return <i>C</i>"
     )
-    t_a1 = Table([[Paragraph(f"<font face='Courier' size=7.5>{algo1_lines}</font>", body_style)]], colWidths=[6.9*inch])
+    t_a1 = Table([[Paragraph(f"<font face='Courier' size=7.2>{algo1_lines}</font>", body_style)]], colWidths=[6.9*inch])
     t_a1.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F8FAFC")),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#CBD5E1")),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('TOPPADDING', (0,0), (-1,-1), 3),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
     story.append(t_a1)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
 
     # Algorithm 2: Decryption Box
     algo2_lines = (
@@ -323,20 +400,18 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "4. <b>Inverse Tier 2:</b> For <i>i</i> = 0 to <i>N</i>-1: <i>S</i><sub>1</sub>[<i>i</i>] &larr; (<i>S</i><sub>2</sub>'[<i>i</i>] - <i>K<sub>V</sub></i>[<i>i</i> mod 7] + 26) mod 26<br/>"
         "5. <b>Inverse Tier 1:</b> <i>P</i> &larr; Playfair_Decrypt(<i>S</i><sub>1</sub>, 5x5 Matrix Key: <code>LABYRINTH</code>); Return <i>P</i>"
     )
-    t_a2 = Table([[Paragraph(f"<font face='Courier' size=7.5>{algo2_lines}</font>", body_style)]], colWidths=[6.9*inch])
+    t_a2 = Table([[Paragraph(f"<font face='Courier' size=7.2>{algo2_lines}</font>", body_style)]], colWidths=[6.9*inch])
     t_a2.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F8FAFC")),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#CBD5E1")),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('TOPPADDING', (0,0), (-1,-1), 3),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
     story.append(t_a2)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 4))
 
     # Deliverable 3: Keys, 5x5 Matrix, Special Rules
     story.append(Paragraph("<b>Deliverable 3 – Secret Keys, 5x5 Keyed Matrix & Alphabet Rules:</b>", sub_heading))
-    
-    # DISTINCT BULLET ITEMS ON SEPARATE LINES
     story.append(Paragraph(
         "&bull; <b>Tier 1 Key & Matrix:</b> Keyword <code>LABYRINTH</code> (9 characters). 'I' and 'J' share cell (1, 0). Remaining letters appended alphabetically.",
         bullet_style
@@ -354,8 +429,8 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         bullet_style
     ))
 
-    # 5x5 Matrix Table
-    matrix_data = [
+    # 5x5 Matrix Table (Wrapped in Paragraphs)
+    matrix_raw = [
         ["Row / Col", "Col 0", "Col 1", "Col 2", "Col 3", "Col 4"],
         ["Row 0", "L", "A", "B", "Y", "R"],
         ["Row 1", "I/J", "N", "T", "H", "C"],
@@ -363,27 +438,35 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Row 3", "M", "O", "P", "Q", "S"],
         ["Row 4", "U", "V", "W", "X", "Z"]
     ]
-    t_mat = Table(matrix_data, colWidths=[1.1*inch, 1.1*inch, 1.1*inch, 1.1*inch, 1.1*inch, 1.1*inch])
+    matrix_data = []
+    for r_idx, row in enumerate(matrix_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(f"<b>{val}</b>", td_center))
+            else:
+                p_row.append(Paragraph(f"<b>{val}</b>", td_center))
+        matrix_data.append(p_row)
+
+    t_mat = Table(matrix_data, colWidths=[1.15*inch]*6)
     t_mat.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
         ('BACKGROUND', (0, 0), (0, -1), colors.HexColor("#334155")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
-        ('TEXTCOLOR', (0, 0), (0, -1), colors.white),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTNAME', (0, 0), (0, -1), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 8.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (1, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_mat)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
-    # Deliverable 4: Challenge Dataset Table
+    # Deliverable 4: Challenge Dataset Table (Wrapped & Spaced Ciphertexts)
     story.append(Paragraph("<b>Deliverable 4 – Standardized Challenge Dataset (10 Plaintext-Ciphertext Pairs):</b>", sub_heading))
-    challenge_data = [
+    challenge_raw = [
         ["#", "Plaintext (Input)", "Ciphertext (Output)", "Len", "True Status"],
         ["1", "DEFEND THE PERIMETER AT ONCE", "MJEDKEZZENDOEKXNLBKMOGIT", "24", "GENUINE"],
         ["2", "ZERO TRUST ARCHITECTURE SECURES DATA", "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF", "32", "GENUINE"],
@@ -396,33 +479,46 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["9", "DENIAL OF SERVICE ATTACK FLOODS ROUTER", "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF", "36", "POISONED (Tampered)"],
         ["10", "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD", "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY", "38", "GENUINE"]
     ]
-    t_chal = Table(challenge_data, colWidths=[0.3*inch, 2.3*inch, 2.6*inch, 0.4*inch, 1.3*inch])
+    challenge_data = []
+    for r_idx, row in enumerate(challenge_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_center))
+            elif c_idx == 1:
+                p_row.append(Paragraph(val, td_style))
+            elif c_idx == 2:
+                # Chunked into groups of 4 for natural wrapping without collision!
+                p_row.append(Paragraph(chunk_cipher(val, 4), td_code))
+            elif c_idx == 3:
+                p_row.append(Paragraph(val, td_center))
+            elif c_idx == 4:
+                if "POISONED" in val:
+                    p_row.append(Paragraph(val, td_danger))
+                else:
+                    p_row.append(Paragraph(val, td_success))
+        challenge_data.append(p_row)
+
+    t_chal = Table(challenge_data, colWidths=[0.35*inch, 2.25*inch, 2.55*inch, 0.45*inch, 1.3*inch])
     t_chal.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (1, 1), (2, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.2),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('TEXTCOLOR', (4, 3), (4, 3), colors.HexColor("#B91C1C")),
-        ('TEXTCOLOR', (4, 6), (4, 6), colors.HexColor("#B91C1C")),
-        ('TEXTCOLOR', (4, 9), (4, 9), colors.HexColor("#B91C1C")),
-        ('FONTNAME', (4, 3), (4, 3), 'Times-Bold'),
-        ('FONTNAME', (4, 6), (4, 6), 'Times-Bold'),
-        ('FONTNAME', (4, 9), (4, 9), 'Times-Bold'),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_chal)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
-    # Deliverable 5: Walkthrough Trace Table
+    # Deliverable 5: Walkthrough Trace Table (Wrapped)
     story.append(Paragraph("<b>Deliverable 5 – Step-by-Step Transformation Trace (Pair #1):</b>", sub_heading))
-    trace_data = [
+    trace_raw = [
         ["Processing Stage", "Intermediate State", "Cryptographic Purpose"],
-        ["Raw Input", "DEFEND THE PERIMETER AT ONCE", "Original plaintext."],
+        ["Raw Input", "DEFEND THE PERIMETER AT ONCE", "Original plaintext security payload."],
         ["Digraph Preparation", "DE FE ND TH EP ER IM ET ER AT ON CE", "Stripped whitespace, 12 digram blocks."],
         ["Tier 1: Playfair Matrix", "ED EF MC HC BO LA LD HG LA LA VO TD", "Digraphic substitution (eliminates unigrams)."],
         ["Tier 2: Vigenère Stream", "ZY PM ED PQ BO YN WR HU LA SA GU MO", "Polyalphabetic keystream masks symmetries."],
@@ -430,21 +526,32 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Tier 3B: Dynamic Drift", "MJ ED KE ZZ EN DO EK XN LB KM OG IT", "Affine Drift Δ(i) = (3i + 7) mod 26."],
         ["Final Ciphertext", "MJEDKEZZENDOEKXNLBKMOGIT", "Transmitted challenge ciphertext (Length 24)."]
     ]
-    t_trace = Table(trace_data, colWidths=[1.7*inch, 3.2*inch, 2.0*inch])
+    trace_data = []
+    for r_idx, row in enumerate(trace_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_bold))
+            elif c_idx == 1:
+                p_row.append(Paragraph(val, td_code))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        trace_data.append(p_row)
+
+    t_trace = Table(trace_data, colWidths=[1.6*inch, 3.1*inch, 2.2*inch])
     t_trace.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (1, 0), (2, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_trace)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # =========================================================
     # SECTION 3: RED TEAM CRYPTANALYSIS & PROOFS
@@ -455,8 +562,8 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         body_style
     ))
 
-    # IoC Table
-    ioc_table = [
+    # IoC Table (Wrapped)
+    ioc_raw = [
         ["Cipher Scheme / Corpus", "Index of Coincidence (IoC)", "Cryptanalytic Deduction"],
         ["Standard English", "0.0667", "Highly biased; trivial frequency attack."],
         ["Caesar / Monoalphabetic", "0.0655", "Vulnerable; preserves unigram frequencies."],
@@ -464,28 +571,36 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Uniform Random Baseline", "0.0385", "Maximum theoretical entropy."],
         ["KTCC Challenge Ciphertext", "0.0388", "Near-ideal entropy; proves multi-tier diffusion."]
     ]
-    t_ioct = Table(ioc_table, colWidths=[2.0*inch, 1.8*inch, 3.1*inch])
+    ioc_data = []
+    for r_idx, row in enumerate(ioc_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 1:
+                p_row.append(Paragraph(val, td_center))
+            elif r_idx == 5:
+                p_row.append(Paragraph(f"<b>{val}</b>", td_bold if c_idx == 0 else td_style))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        ioc_data.append(p_row)
+
+    t_ioct = Table(ioc_data, colWidths=[2.0*inch, 1.8*inch, 3.1*inch])
     t_ioct.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (0, 1), (0, -1), 'LEFT'),
-        ('ALIGN', (2, 1), (2, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('TEXTCOLOR', (0, 5), (-1, 5), colors.HexColor("#1E3A8A")),
-        ('FONTNAME', (0, 5), (-1, 5), 'Times-Bold')
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_ioct)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
-    # Deliverable 7: Mathematical Error Proofs
+    # Deliverable 7: Mathematical Error Proofs Table (Paragraph Wrapped!)
     story.append(Paragraph("<b>Deliverable 7 – Rigorous Identification & Proofs of Corrupted Pairs:</b>", sub_heading))
-    proofs_data = [
+    proofs_raw = [
         ["Pair #", "Flaw Category", "Location", "Observed vs. Expected", "Mathematical Proof of Inconsistency"],
         [
             "3",
@@ -509,27 +624,34 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
             "Suffix characters 'CALF' diverge from linear affine trajectory by an arbitrary constant displacement (+11 mod 26), failing to reconstruct the known word 'ROUTER'."
         ]
     ]
+    proofs_data = []
+    for r_idx, row in enumerate(proofs_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_danger))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        proofs_data.append(p_row)
+
     t_proof = Table(proofs_data, colWidths=[0.5*inch, 1.4*inch, 1.3*inch, 1.4*inch, 2.3*inch])
     t_proof.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (1, 1), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.2),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
         ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
         ('TOPPADDING', (0, 0), (-1, -1), 2.5),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('TEXTCOLOR', (0, 1), (0, -1), colors.HexColor("#B91C1C")),
-        ('FONTNAME', (0, 1), (0, -1), 'Times-Bold')
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_proof)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
-    # Deliverable 8: Key Recovery Table
+    # Deliverable 8: Key Recovery Table (Wrapped)
     story.append(Paragraph("<b>Deliverable 8 – Key Recovery & Layer Decoupling:</b>", sub_heading))
-    rec_data = [
+    rec_raw = [
         ["Cipher Layer", "Target Parameter", "Recovered Value", "Cryptanalytic Method Applied"],
         ["Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Known-Plaintext Digraphic Matrix Constraint Solver"],
         ["Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "Geometric Row-Col-Rectangle Intersection Audit"],
@@ -538,25 +660,36 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Linear Congruence Solver mod 26: δ·i + θ"],
         ["Tier 3B (Affine Drift)", "Seed Offset (θ)", "7", "Base Offset Extraction at Position i=0 mod 26"]
     ]
+    rec_data = []
+    for r_idx, row in enumerate(rec_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_bold))
+            elif c_idx == 2:
+                p_row.append(Paragraph(val, td_code))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        rec_data.append(p_row)
+
     t_rec = Table(rec_data, colWidths=[1.6*inch, 1.8*inch, 1.7*inch, 1.8*inch])
     t_rec.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (0, 1), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_rec)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
-    # Deliverable 9 & 10: Verification Table
+    # Deliverable 9 & 10: Verification Table (Wrapped & Spaced Ciphertexts)
     story.append(Paragraph("<b>Deliverable 9 & 10 – Verification Evidence & Round-Trip Plaintext Recovery:</b>", sub_heading))
-    verif_data = [
+    verif_raw = [
         ["#", "Challenge Ciphertext", "Recovered Plaintext", "Status", "Fidelity"],
         ["1", "MJEDKEZZENDOEKXNLBKMOGIT", "DEFEND THE PERIMETER AT ONCE", "VERIFIED VALID", "100.0%"],
         ["2", "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF", "ZERO TRUST ARCHITECTURE SECURES DATA", "VERIFIED VALID", "100.0%"],
@@ -569,28 +702,39 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["9", "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF", "[Rejected: Tail displaced at idx 32-35]", "FLAGGED CORRUPT", "0.0%"],
         ["10", "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY", "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD", "VERIFIED VALID", "100.0%"]
     ]
-    t_ver = Table(verif_data, colWidths=[0.3*inch, 2.3*inch, 2.4*inch, 1.1*inch, 0.8*inch])
+    verif_data = []
+    for r_idx, row in enumerate(verif_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_center))
+            elif c_idx == 1:
+                p_row.append(Paragraph(chunk_cipher(val, 4), td_code))
+            elif c_idx == 2:
+                p_row.append(Paragraph(val, td_style))
+            elif c_idx == 3:
+                if "FLAGGED" in val:
+                    p_row.append(Paragraph(val, td_danger))
+                else:
+                    p_row.append(Paragraph(val, td_success))
+            elif c_idx == 4:
+                p_row.append(Paragraph(val, td_center))
+        verif_data.append(p_row)
+
+    t_ver = Table(verif_data, colWidths=[0.35*inch, 2.45*inch, 2.35*inch, 1.05*inch, 0.7*inch])
     t_ver.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (1, 1), (2, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.0),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")]),
-        ('TEXTCOLOR', (3, 3), (3, 3), colors.HexColor("#B91C1C")),
-        ('TEXTCOLOR', (3, 6), (3, 6), colors.HexColor("#B91C1C")),
-        ('TEXTCOLOR', (3, 9), (3, 9), colors.HexColor("#B91C1C")),
-        ('TEXTCOLOR', (3, 1), (3, 2), colors.HexColor("#15803D")),
-        ('TEXTCOLOR', (3, 4), (3, 5), colors.HexColor("#15803D")),
-        ('TEXTCOLOR', (3, 7), (3, 8), colors.HexColor("#15803D")),
-        ('TEXTCOLOR', (3, 10), (3, 10), colors.HexColor("#15803D")),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_ver)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # =========================================================
     # SECTION 4: BENCHMARKS & COMPLEXITY
@@ -601,7 +745,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         body_style
     ))
 
-    bench_data = [
+    bench_raw = [
         ["Payload Length (N)", "KTCC Encrypt (ms)", "KTCC Decrypt (ms)", "Caesar Shift (ms)", "Overhead Factor", "Throughput (chars/s)"],
         ["100 chars", "0.185 ms", "0.147 ms", "0.012 ms", "15.4×", "539,601 chars/s"],
         ["500 chars", "1.054 ms", "0.769 ms", "0.060 ms", "17.5×", "474,442 chars/s"],
@@ -609,26 +753,34 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["5,000 chars", "9.326 ms", "7.332 ms", "0.558 ms", "16.7×", "536,125 chars/s"],
         ["10,000 chars", "18.552 ms", "13.939 ms", "1.119 ms", "16.5×", "539,023 chars/s"]
     ]
+    bench_data = []
+    for r_idx, row in enumerate(bench_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            else:
+                p_row.append(Paragraph(val, td_center))
+        bench_data.append(p_row)
+
     t_bench = Table(bench_data, colWidths=[1.2*inch, 1.2*inch, 1.2*inch, 1.1*inch, 1.0*inch, 1.2*inch])
     t_bench.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
     story.append(t_bench)
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
 
     story.append(Paragraph(
         "<b>Asymptotic Scaling:</b> Time complexity is strictly linear <i>O(N)</i> across all three stages (Playfair: <i>N/2</i> lookups; Vigenère: <i>N</i> modular shifts; ADI-PDD: <i>N/4</i> swaps and <i>N</i> affine operations). Memory is <i>O(N)</i> with constant <i>O(1)</i> matrix storage.",
         body_style
     ))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # =========================================================
     # SECTION 5: SUGGESTIONS FOR IMPROVEMENT
@@ -656,7 +808,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "<b>4. Expanded 6x6 Matrix Alphabet:</b> Expand the Playfair grid to 6x6 (36 alphanumeric cells: A–Z and 0–9) to eliminate the 'I'/'J' merger and allow native encryption of IP addresses and cryptographic tokens.",
         numbered_style
     ))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # =========================================================
     # SECTION 6: CODE SUBMISSION & TEAM CONTRIBUTORS
@@ -668,7 +820,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     ))
 
     story.append(Paragraph("<b>5-Student Project Team Contributors (Roll-Number Ordered):</b>", sub_heading))
-    team_data = [
+    team_raw = [
         ["Seat No.", "Student Name", "GitHub Profile", "Primary Responsibility Area"],
         ["CR-23009", "Mr. Hamza Saleem", "@HamzaSaleem56", "Implementation Specialist (Pipeline Decoupling & Benchmarks)"],
         ["CR-23013", "Mr. Ameem Akhtar", "@ameemakhtr", "Lead Architect & Cryptanalyst (Architecture, Tier 3 ADI-PDD, Red Team Solver)"],
@@ -676,16 +828,29 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["CR-23038", "Mr. Muhammad Usman", "@Daedalus46", "Algebraic Analyst (Statistical Profiling, IoC Analysis, Error Proofs)"],
         ["CR-23041", "Mr. Maaz Wasim", "@maazw", "QA & Verification Lead (Automated Test Suite test_cca.py, Inversion Audit)"]
     ]
-    t_team = Table(team_data, colWidths=[0.8*inch, 1.5*inch, 1.4*inch, 3.2*inch])
+    team_data = []
+    for r_idx, row in enumerate(team_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(f"<b>{val}</b>", td_center))
+            elif c_idx == 1:
+                p_row.append(Paragraph(f"<b>{val}</b>", td_style))
+            elif c_idx == 2:
+                p_row.append(Paragraph(val, td_code))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        team_data.append(p_row)
+
+    t_team = Table(team_data, colWidths=[0.85*inch, 1.55*inch, 1.4*inch, 3.1*inch])
     t_team.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-        ('ALIGN', (1, 1), (-1, -1), 'LEFT'),
-        ('FONTNAME', (0, 0), (-1, 0), 'Times-Bold'),
-        ('FONTSIZE', (0, 0), (-1, -1), 7.5),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
+        ('TOPPADDING', (0, 0), (-1, -1), 2),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
@@ -701,15 +866,15 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "python build_report_pdf.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade PDF report<br/>"
         "python build_report_docx.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade Word DOCX report"
     )
-    t_cmd = Table([[Paragraph(f"<font face='Courier' size=7.5>{cmd_lines}</font>", body_style)]], colWidths=[6.9*inch])
+    t_cmd = Table([[Paragraph(f"<font face='Courier' size=7.2>{cmd_lines}</font>", body_style)]], colWidths=[6.9*inch])
     t_cmd.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor("#F8FAFC")),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor("#CBD5E1")),
-        ('TOPPADDING', (0,0), (-1,-1), 4),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 4),
+        ('TOPPADDING', (0,0), (-1,-1), 3),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
     ]))
     story.append(t_cmd)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 5))
 
     # =========================================================
     # SECTION 7: REFERENCES
@@ -729,12 +894,6 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # Build the document
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"[SUCCESS] Publication-grade PDF successfully built: {pdf_path}")
-
-    # Synchronize copy as CCA_REPORT.pdf
-    cca_pdf_path = os.path.join(SCRIPT_DIR, "CCA_REPORT.pdf")
-    if pdf_path != cca_pdf_path:
-        shutil.copyfile(pdf_path, cca_pdf_path)
-        print(f"[SUCCESS] Synchronized copy created: CCA_REPORT.pdf")
 
 
 if __name__ == "__main__":

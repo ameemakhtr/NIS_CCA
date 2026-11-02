@@ -799,12 +799,6 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     doc.save(docx_path)
     print(f"[SUCCESS] Publication-grade DOCX successfully built: {docx_path}")
 
-    # Synchronize copy as CCA_REPORT.docx
-    cca_docx_path = os.path.join(SCRIPT_DIR, "CCA_REPORT.docx")
-    if docx_path != cca_docx_path:
-        shutil.copyfile(docx_path, cca_docx_path)
-        print(f"[SUCCESS] Synchronized copy created: CCA_REPORT.docx")
-
 
 if __name__ == "__main__":
     build_cca_docx()
