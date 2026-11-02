@@ -281,38 +281,6 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     doc.add_paragraph(
         "Dual-Team Implementation & Verification: Under the challenge framework, the Blue Team synthesized the cipher architecture alongside a standardized corpus of 10 challenge plaintext-ciphertext pairs (7 mathematically valid, 3 poisoned with intentional cryptographic flaws). The Red Team developed an automated cryptanalytic engine that performed statistical Index of Coincidence profiling, differential consistency filtering, and algebraic stream derivation. The attack engine isolated the 3 corrupted pairs with formal proofs, recovered 100% of the secret keys (LABYRINTH, VALIANT, δ=3, θ=7), and decrypted all genuine ciphertexts with zero character error."
     )
-
-    # Summary Matrix
-    sum_data = [
-        ("Metric / Dimension", "Blue Team (Architects)", "Red Team (Cryptanalysts)", "Audit Outcome"),
-        ("Target Cipher", "Al-Kindi Composite Cipher (KTCC)", "Al-Kindi Composite Cipher (KTCC)", "100% Matched"),
-        ("Cascaded Layers", "Playfair (5x5) + Vigenère + ADI-PDD", "3 Tiers Decoupled Algebraically", "Fully Isolated"),
-        ("Secret Keys", "LABYRINTH, VALIANT, (δ=3, θ=7)", "Recovered: LABYRINTH, VALIANT, (3, 7)", "Zero Error"),
-        ("Challenge Dataset", "10 Pairs Generated (7 Valid, 3 Traps)", "10 Pairs Evaluated (3 Rejected, 7 Accepted)", "Ground Truth Verified"),
-        ("Poisoned Pairs", "Pairs 3, 6, and 9 Poisoned", "Isolated IDs: 3, 6, and 9", "100% Precision"),
-        ("Decryption Success", "Encryption Authority", "100.0% Round-Trip Fidelity", "Flawless Inversion")
-    ]
-    t_sm = doc.add_table(rows=len(sum_data), cols=4)
-    t_sm.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(sum_data):
-        row = t_sm.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(9)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            elif r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            set_cell_margins(cell, top=50, bottom=50, left=70, right=70)
-
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
     # =========================================================

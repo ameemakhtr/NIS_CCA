@@ -308,43 +308,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "<b>Dual-Team Implementation & Verification:</b> Under the challenge framework, the Blue Team synthesized the cipher architecture alongside a standardized corpus of 10 challenge plaintext-ciphertext pairs (7 mathematically valid, 3 poisoned with intentional cryptographic flaws). The Red Team developed an automated cryptanalytic engine that performed statistical Index of Coincidence profiling, differential consistency filtering, and algebraic stream derivation. The attack engine isolated the 3 corrupted pairs with formal proofs, recovered 100% of the secret keys (<code>LABYRINTH</code>, <code>VALIANT</code>, &delta;=3, &theta;=7), and decrypted all genuine ciphertexts with zero character error.",
         body_style
     ))
-
-    story.append(Paragraph("<b>Core Deliverables Summary Matrix:</b>", sub_heading))
-    summary_raw = [
-        ["Metric / Dimension", "Blue Team (Architects)", "Red Team (Cryptanalysts)", "Audit Outcome"],
-        ["Target Cipher", "Al-Kindi Composite Cipher (KTCC)", "Al-Kindi Composite Cipher (KTCC)", "100% Matched"],
-        ["Cascaded Layers", "Playfair (5x5) + Vigenère + ADI-PDD", "3 Tiers Decoupled Algebraically", "Fully Isolated"],
-        ["Secret Keys", "LABYRINTH, VALIANT, (δ=3, θ=7)", "Recovered: LABYRINTH, VALIANT, (3, 7)", "Zero Error"],
-        ["Challenge Dataset", "10 Pairs Generated (7 Valid, 3 Traps)", "10 Pairs Evaluated (3 Rejected, 7 Accepted)", "Ground Truth Verified"],
-        ["Poisoned Pairs", "Pairs 3, 6, and 9 Poisoned", "Isolated IDs: 3, 6, and 9", "100% Precision"],
-        ["Decryption Success", "Encryption Authority", "100.0% Round-Trip Fidelity", "Flawless Inversion"]
-    ]
-    summary_data = []
-    for r_idx, row in enumerate(summary_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 0:
-                p_row.append(Paragraph(val, td_bold))
-            elif c_idx == 3:
-                p_row.append(Paragraph(val, td_center))
-            else:
-                p_row.append(Paragraph(val, td_style))
-        summary_data.append(p_row)
-
-    t_summary = Table(summary_data, colWidths=[1.4*inch, 1.85*inch, 2.25*inch, 1.4*inch])
-    t_summary.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 3),
-        ('TOPPADDING', (0, 0), (-1, -1), 3),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_summary)
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 6))
 
     # =========================================================
     # SECTION 2: BLUE TEAM CIPHER DESIGN & SPECIFICATION
