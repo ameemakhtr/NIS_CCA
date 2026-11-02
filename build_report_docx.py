@@ -702,37 +702,6 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     doc.add_paragraph(
         "All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at: https://github.com/ameemakhtr/NIS_CCA"
     )
-
-    doc.add_paragraph("5-Student Project Team Contributors (Roll-Number Ordered):")
-    team_data = [
-        ("Seat No.", "Student Name", "GitHub Profile"),
-        ("CR-23009", "Mr. Hamza Saleem", "@HamzaSaleem56"),
-        ("CR-23013", "Mr. Ameem Akhtar", "@ameemakhtr"),
-        ("CR-23017", "Mr. Minhal Rizvi", "@Minhal128"),
-        ("CR-23038", "Mr. Muhammad Usman", "@Daedalus46"),
-        ("CR-23041", "Mr. Maaz Wasim", "@maazw")
-    ]
-    t_tm = doc.add_table(rows=len(team_data), cols=3)
-    t_tm.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(team_data):
-        row = t_tm.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(8.5)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            elif r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
-
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
     add_callout_box(doc, [

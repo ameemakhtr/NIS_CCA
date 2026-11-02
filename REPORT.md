@@ -17,13 +17,13 @@
 
 ## Student Team Details
 
-| Seat Number | Student Name | GitHub Profile | Primary Contribution Area |
-| :---: | :--- | :---: | :--- |
-| **CR-23009** | **Mr. Hamza Saleem** | [@HamzaSaleem56](https://github.com/HamzaSaleem56) | Implementation Specialist (Pipeline Decoupling, Benchmarking, Complexity Profiling) |
-| **CR-23013** | **Mr. Ameem Akhtar** | [@ameemakhtr](https://github.com/ameemakhtr) | Lead Architect & Cryptanalyst (System Architecture, Tier 3 ADI-PDD, Red Team Solver) |
-| **CR-23017** | **Mr. Minhal Rizvi** | [@Minhal128](https://github.com/Minhal128) | Security Engineer (Tier 1 Playfair Matrix, Tier 2 Vigenère, Challenge Dataset) |
-| **CR-23038** | **Mr. Muhammad Usman** | [@Daedalus46](https://github.com/Daedalus46) | Algebraic Analyst (Statistical Profiling, IoC Analysis, Mathematical Error Proofs) |
-| **CR-23041** | **Mr. Maaz Wasim** | [@maazw](https://github.com/maazw) | QA & Verification Lead (Automated Test Suite `test_cca.py`, Round-Trip Plaintext Inversion Testing) |
+| Seat Number | Student Name | GitHub Profile |
+| :---: | :--- | :---: |
+| **CR-23009** | **Mr. Hamza Saleem** | [@HamzaSaleem56](https://github.com/HamzaSaleem56) |
+| **CR-23013** | **Mr. Ameem Akhtar** | [@ameemakhtr](https://github.com/ameemakhtr) |
+| **CR-23017** | **Mr. Minhal Rizvi** | [@Minhal128](https://github.com/Minhal128) |
+| **CR-23038** | **Mr. Muhammad Usman** | [@Daedalus46](https://github.com/Daedalus46) |
+| **CR-23041** | **Mr. Maaz Wasim** | [@maazw](https://github.com/maazw) |
 
 ---
 
