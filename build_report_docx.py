@@ -352,10 +352,14 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
             r = p.add_run(val)
             r.font.name = 'Times New Roman'
             r.font.size = Pt(9.5)
-            if r_idx == 0 or c_idx == 0:
+            if r_idx == 0:
                 r.bold = True
-                set_cell_background(cell, "2C3E50" if r_idx == 0 else "334155")
+                set_cell_background(cell, "2C3E50")
                 r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+            elif c_idx == 0:
+                r.bold = True
+                set_cell_background(cell, "EAEEF4")
+                r.font.color.rgb = RGBColor(0x1E, 0x29, 0x3B)
             elif r_idx % 2 == 1:
                 set_cell_background(cell, "F8FAFC")
             set_cell_margins(cell, top=50, bottom=50, left=70, right=70)
@@ -543,7 +547,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     rc_data = [
         ("Cipher Layer", "Target Parameter", "Recovered Value", "Cryptanalytic Method Applied"),
         ("Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Known-Plaintext Digraphic Matrix Constraint Solver"),
-        ("Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "Geometric Row-Col-Rectangle Intersection Audit"),
+        ("Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "Geometric Row-Col-Rectangle Intersection Analysis"),
         ("Tier 2 (Polyalphabetic)", "Vigenère Keyword", "VALIANT (Length 7)", "Autocorrelation & Modular Keystream Extraction"),
         ("Tier 3A (Transposition)", "Block Parity Inversion", "Swap on Even Blocks (b%2==0)", "Blockwise Differential Inconsistency Profiling"),
         ("Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Linear Congruence Solver mod 26: δ·i + θ"),
@@ -706,7 +710,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
         ("CR-23013", "Mr. Ameem Akhtar", "@ameemakhtr", "Lead Architect & Cryptanalyst (Architecture, Tier 3 ADI-PDD, Red Team Solver)"),
         ("CR-23017", "Mr. Minhal Rizvi", "@Minhal128", "Security Engineer (Tier 1 Playfair Matrix, Tier 2 Vigenère, Dataset Generation)"),
         ("CR-23038", "Mr. Muhammad Usman", "@Daedalus46", "Algebraic Analyst (Statistical Profiling, IoC Analysis, Error Proofs)"),
-        ("CR-23041", "Mr. Maaz Wasim", "@maazw", "QA & Verification Lead (Automated Test Suite test_cca.py, Inversion Audit)")
+        ("CR-23041", "Mr. Maaz Wasim", "@maazw", "QA & Verification Lead (Automated Test Suite test_cca.py, Plaintext Inversion Testing)")
     ]
     t_tm = doc.add_table(rows=len(team_data), cols=4)
     t_tm.alignment = WD_TABLE_ALIGNMENT.CENTER

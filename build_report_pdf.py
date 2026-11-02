@@ -389,11 +389,11 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         bullet_style
     ))
     story.append(Paragraph(
-        "&bull; <b>Conditioning Rules:</b> All text capitalized; 'J' &rarr; 'I'; duplicate digraph letters split with 'X'; odd terminal messages padded with 'Z'.",
+        "&bull; <b>Conditioning Rules:</b> All text uppercase; 'J' replaced with 'I'; duplicate digraph letters split with 'X'; odd terminal messages padded with 'Z'.",
         bullet_style
     ))
 
-    # 5x5 Matrix Table (Wrapped in Paragraphs)
+    # 5x5 Matrix Table (Wrapped in Paragraphs with High-Contrast Legible Headers)
     matrix_raw = [
         ["Row / Col", "Col 0", "Col 1", "Col 2", "Col 3", "Col 4"],
         ["Row 0", "L", "A", "B", "Y", "R"],
@@ -402,6 +402,20 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Row 3", "M", "O", "P", "Q", "S"],
         ["Row 4", "U", "V", "W", "X", "Z"]
     ]
+    mat_col0_style = ParagraphStyle(
+        'MatCol0',
+        parent=td_center,
+        fontName='Times-Bold',
+        fontSize=7.8,
+        textColor=colors.HexColor("#1E293B")
+    )
+    mat_cell_style = ParagraphStyle(
+        'MatCell',
+        parent=td_center,
+        fontName='Times-Bold',
+        fontSize=8.5,
+        textColor=colors.HexColor("#0F172A")
+    )
     matrix_data = []
     for r_idx, row in enumerate(matrix_raw):
         p_row = []
@@ -409,19 +423,19 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
             if r_idx == 0:
                 p_row.append(Paragraph(val, th_style))
             elif c_idx == 0:
-                p_row.append(Paragraph(f"<b>{val}</b>", td_center))
+                p_row.append(Paragraph(f"<b>{val}</b>", mat_col0_style))
             else:
-                p_row.append(Paragraph(f"<b>{val}</b>", td_center))
+                p_row.append(Paragraph(f"<b>{val}</b>", mat_cell_style))
         matrix_data.append(p_row)
 
     t_mat = Table(matrix_data, colWidths=[1.15*inch]*6)
     t_mat.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('BACKGROUND', (0, 0), (0, -1), colors.HexColor("#334155")),
+        ('BACKGROUND', (0, 1), (0, -1), colors.HexColor("#EAEEF4")),
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ('TOPPADDING', (0, 0), (-1, -1), 2),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
         ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
         ('ROWBACKGROUNDS', (1, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
     ]))
@@ -618,7 +632,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     rec_raw = [
         ["Cipher Layer", "Target Parameter", "Recovered Value", "Cryptanalytic Method Applied"],
         ["Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Known-Plaintext Digraphic Matrix Constraint Solver"],
-        ["Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "Geometric Row-Col-Rectangle Intersection Audit"],
+        ["Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "Geometric Row-Col-Rectangle Intersection Analysis"],
         ["Tier 2 (Polyalphabetic)", "Vigenère Keyword", "VALIANT (Length 7)", "Autocorrelation & Modular Keystream Extraction"],
         ["Tier 3A (Transposition)", "Block Parity Inversion", "Swap on Even Blocks (b%2==0)", "Blockwise Differential Inconsistency Profiling"],
         ["Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Linear Congruence Solver mod 26: δ·i + θ"],
@@ -790,7 +804,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["CR-23013", "Mr. Ameem Akhtar", "@ameemakhtr", "Lead Architect & Cryptanalyst (Architecture, Tier 3 ADI-PDD, Red Team Solver)"],
         ["CR-23017", "Mr. Minhal Rizvi", "@Minhal128", "Security Engineer (Tier 1 Playfair Matrix, Tier 2 Vigenère, Dataset Generation)"],
         ["CR-23038", "Mr. Muhammad Usman", "@Daedalus46", "Algebraic Analyst (Statistical Profiling, IoC Analysis, Error Proofs)"],
-        ["CR-23041", "Mr. Maaz Wasim", "@maazw", "QA & Verification Lead (Automated Test Suite test_cca.py, Inversion Audit)"]
+        ["CR-23041", "Mr. Maaz Wasim", "@maazw", "QA & Verification Lead (Automated Test Suite test_cca.py, Plaintext Inversion Testing)"]
     ]
     team_data = []
     for r_idx, row in enumerate(team_raw):

@@ -63,7 +63,7 @@ NIS_CCA/
 ├── build_report_docx.py                 # Academic Word Report Generator (python-docx)
 ├── Complex_Computing_Activity_Report.pdf# Master Publication-Grade PDF Report (Times New Roman)
 ├── Complex_Computing_Activity_Report.docx# Master Publication-Grade Word Document
-├── REPORT.md                            # Comprehensive Markdown Audit & Technical Report
+├── REPORT.md                            # Comprehensive Markdown Technical Report
 ├── cca_cipher.py                        # Core Cipher Engine (Playfair + Vigenère + ADI-PDD)
 ├── cca_challenge.py                     # Challenge Dataset Generator (10 Pairs with 3 Traps)
 ├── cca_attack.py                        # Red Team Cryptanalysis & Automated Decoupling Suite

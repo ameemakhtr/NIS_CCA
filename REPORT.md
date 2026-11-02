@@ -23,13 +23,13 @@
 | **CR-23013** | **Mr. Ameem Akhtar** | [@ameemakhtr](https://github.com/ameemakhtr) | Lead Architect & Cryptanalyst (System Architecture, Tier 3 ADI-PDD, Red Team Solver) |
 | **CR-23017** | **Mr. Minhal Rizvi** | [@Minhal128](https://github.com/Minhal128) | Security Engineer (Tier 1 Playfair Matrix, Tier 2 Vigenère, Challenge Dataset) |
 | **CR-23038** | **Mr. Muhammad Usman** | [@Daedalus46](https://github.com/Daedalus46) | Algebraic Analyst (Statistical Profiling, IoC Analysis, Mathematical Error Proofs) |
-| **CR-23041** | **Mr. Maaz Wasim** | [@maazw](https://github.com/maazw) | QA & Verification Lead (Automated Test Suite `test_cca.py`, Round-Trip Inversion Audit) |
+| **CR-23041** | **Mr. Maaz Wasim** | [@maazw](https://github.com/maazw) | QA & Verification Lead (Automated Test Suite `test_cca.py`, Round-Trip Plaintext Inversion Testing) |
 
 ---
 
 ## Executive Summary & Architecture Overview
 
-This audit report documents the end-to-end design, implementation, cryptanalysis, and empirical verification for the **CT-486 Classical Cipher Challenge**. The submission provides a complete, dual-perspective engineering record:
+This technical report documents the end-to-end design, implementation, cryptanalysis, and empirical verification for the **CT-486 Classical Cipher Challenge**. The submission provides a complete, dual-perspective engineering record:
 * **Blue Team (Deliverables 1–5):** Design of the **Al-Kindi Tri-Tiered Composite Cipher (KTCC)**, combining 5x5 Playfair digraphic substitution, polyalphabetic Vigenère substitution, and team-designed Alternating Digraph Inversion & Positional Dynamic Drift (ADI-PDD), alongside 10 challenge pairs (7 genuine, 3 corrupted).
 * **Red Team (Deliverables 6–10):** Systematic cryptanalytic reverse-engineering isolating the 3 corrupted pairs with formal mathematical proofs, recovering secret keys (`LABYRINTH`, `VALIANT`, $\delta=3, \theta=7$), and proving 100% round-trip plaintext decryption.
 
@@ -268,7 +268,7 @@ The Red Team differential consistency engine uniquely isolated **Pairs 3, 6, and
 | Layer | Parameter | Recovered Value | Method of Discovery |
 | :--- | :--- | :--- | :--- |
 | **Tier 1** | Playfair Keyword | `LABYRINTH` | Known-Plaintext Digraphic Matrix Constraint Solver |
-| **Tier 1** | Alphabet Grid | 25 letters (I/J merged) | Geometric Row-Column-Rectangle Intersection Audit |
+| **Tier 1** | Alphabet Grid | 25 letters (I/J merged) | Geometric Row-Column-Rectangle Intersection Analysis |
 | **Tier 2** | Vigenère Keyword | `VALIANT` (Length 7) | Autocorrelation & Modular Keystream Extraction |
 | **Tier 3A** | Transposition Rule | Swap on even blocks ($b \pmod 2 == 0$) | Blockwise Differential Inconsistency Profiling |
 | **Tier 3B** | Multiplier ($\delta$) | `3` | Linear Congruence mod 26: $\Delta(i) = \delta \cdot i + \theta$ |
