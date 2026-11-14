@@ -1,6 +1,7 @@
 {
   "cipher_info": {
-    "name": "Chimera-Triad Composite Cipher (CT-486 CCA)",
+    "name": "Al-Kindi Tri-Tiered Composite Cipher (KTCC)",
+    "historical_basis": "Named after Abu Yusuf Al-Kindi (801-873 CE), Father of Cryptanalysis",
     "playfair_key": "LABYRINTH",
     "vigenere_key": "VALIANT",
     "delta": 3,
@@ -84,7 +85,7 @@
       "is_valid": true,
       "genuine_ciphertext": "MJEDKEZZENDOEKXNLBKMOGIT",
       "challenge_ciphertext": "MJEDKEZZENDOEKXNLBKMOGIT",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "DEFEND THE PERIMETER AT ONCE",
         "prepared_plaintext": "DEFENDTHEPERIMETERATONCE",
@@ -98,7 +99,7 @@
       "is_valid": true,
       "genuine_ciphertext": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF",
       "challenge_ciphertext": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "ZERO TRUST ARCHITECTURE SECURES DATA",
         "prepared_plaintext": "ZEROTRUSTARCHITECTURESECURESDATA",
@@ -126,7 +127,7 @@
       "is_valid": true,
       "genuine_ciphertext": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR",
       "challenge_ciphertext": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY",
         "prepared_plaintext": "INCIDENTRESPONSETEAMENGAGEDIMXMEDIATELYZ",
@@ -140,7 +141,7 @@
       "is_valid": true,
       "genuine_ciphertext": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP",
       "challenge_ciphertext": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "QUANTUM COMPUTING THREATENS TRADITIONAL RSA",
         "prepared_plaintext": "QUANTUMCOMPUTINGTHREATENSTRADITIONALRSAZ",
@@ -154,7 +155,7 @@
       "is_valid": false,
       "genuine_ciphertext": "STZSRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY",
       "challenge_ciphertext": "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY",
-      "reason": "Transposition parity violation: Characters at indices 2 and 3 (block 1, odd) were swapped instead of maintaining the Serpentine Digraph Inversion parity rule.",
+      "reason": "Transposition parity violation: Characters at indices 2 and 3 (block 1, odd) were swapped instead of maintaining the even-block parity rule.",
       "trace": {
         "plaintext_raw": "MALWARE EXFILTRATING SENSITIVE AUDIT LOGS",
         "prepared_plaintext": "MALWAREXEXFILTRATINGSENSITIVEAUDITLOGS",
@@ -168,7 +169,7 @@
       "is_valid": true,
       "genuine_ciphertext": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL",
       "challenge_ciphertext": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC",
         "prepared_plaintext": "FIREWALXLBLOCKSUNTRUSTEDNETWORKTRAFXFICZ",
@@ -182,7 +183,7 @@
       "is_valid": true,
       "genuine_ciphertext": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ",
       "challenge_ciphertext": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "AUTHENTICATION TOKEN EXPIRES SOON REFRESH",
         "prepared_plaintext": "AUTHENTICATIONTOKENEXPIRESSOONREFRESHZ",
@@ -210,7 +211,7 @@
       "is_valid": true,
       "genuine_ciphertext": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY",
       "challenge_ciphertext": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY",
-      "reason": "GENUINE - Mathematically consistent with all 3 cipher stages.",
+      "reason": "GENUINE - Mathematically consistent with all 3 cipher tiers.",
       "trace": {
         "plaintext_raw": "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD",
         "prepared_plaintext": "ELLIPTICCURVEDIGITALSIGNATURESTANDARDZ",

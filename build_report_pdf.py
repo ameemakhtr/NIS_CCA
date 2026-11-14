@@ -305,7 +305,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         body_style
     ))
     story.append(Paragraph(
-        "<b>Dual-Team Implementation & Verification:</b> Under the challenge framework, the Blue Team synthesized the cipher architecture alongside a standardized corpus of 10 challenge plaintext-ciphertext pairs (7 mathematically valid, 3 poisoned with intentional cryptographic flaws). The Red Team developed an automated cryptanalytic engine that performed statistical Index of Coincidence profiling, differential consistency filtering, and algebraic stream derivation. The attack engine isolated the 3 corrupted pairs with formal proofs, recovered 100% of the secret keys (<code>LABYRINTH</code>, <code>VALIANT</code>, &delta;=3, &theta;=7), and decrypted all genuine ciphertexts with zero character error.",
+        "<b>Dual-Team Implementation & Verification:</b> Under the challenge framework, the Blue Team synthesized the cipher architecture alongside a standardized corpus of 10 challenge plaintext-ciphertext pairs (7 mathematically valid, 3 poisoned with intentional cryptographic flaws). The Red Team developed an automated cryptanalytic engine that performed statistical Index of Coincidence profiling, simulated annealing over Playfair matrices scored by cross-pair keystream agreement, and exact decomposition of the remaining keystream, using only the public pairs and no keys. The attack engine isolated the 3 corrupted pairs with data-derived evidence, recovered the secret keys (<code>LABYRINTH</code>, <code>VALIANT</code>, &delta;=3, &theta;=7), and every genuine pair round-trips exactly with the recovered keys. The data fixes the Vigenère key and θ only up to a shared offset; θ=7 is the split that makes the key an English word.",
         body_style
     ))
     story.append(Spacer(1, 6))
@@ -315,13 +315,13 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     story.append(Paragraph("2. Blue Team Deliverables: Cipher Design & Specification", section_heading))
     story.append(Paragraph(
-        "<b>Deliverable 1 – Cipher Name & Technical Description:</b> The cipher is formally designated the <b>Al-Kindi Tri-Tiered Composite Cipher (KTCC)</b>. It satisfies Claude Shannon's product cipher criteria by cascading three orthogonal classical primitives:",
+        "<b>Deliverable 1 – Cipher Name & Technical Description:</b> The cipher is formally designated the <b>Al-Kindi Tri-Tiered Composite Cipher (KTCC)</b>. It satisfies Claude Shannon's product cipher criteria by cascading three complementary classical primitives:",
         body_style
     ))
 
     # DISTINCT NUMBERED ITEMS ON SEPARATE LINES
     story.append(Paragraph(
-        "<b>1. Tier 1 (Polygraphic Digraph Substitution):</b> A 5x5 Keyed Playfair Matrix encrypts adjacent character pairs, eliminating single-character frequency spikes and scrambling word boundaries.",
+        "<b>1. Tier 1 (Polygraphic Digraph Substitution):</b> A 5x5 Keyed Playfair Matrix encrypts adjacent character pairs, flattening single-character frequencies (IoC 0.0688 → 0.0551 on the challenge plaintexts) and scrambling word boundaries.",
         numbered_style
     ))
     story.append(Paragraph(
@@ -498,9 +498,9 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         ["Processing Stage", "Intermediate State", "Cryptographic Purpose"],
         ["Raw Input", "DEFEND THE PERIMETER AT ONCE", "Original plaintext security payload."],
         ["Digraph Preparation", "DE FE ND TH EP ER IM ET ER AT ON CE", "Stripped whitespace, 12 digram blocks."],
-        ["Tier 1: Playfair Matrix", "ED EF MC HC BO LA LD HG LA LA VO TD", "Digraphic substitution (eliminates unigrams)."],
-        ["Tier 2: Vigenère Stream", "ZY PM ED PQ BO YN WR HU LA SA GU MO", "Polyalphabetic keystream masks symmetries."],
-        ["Tier 3A: Digraph Inversion", "YZ PM DE PQ OB YN RW HU AL SA UG MO", "Alternating Parity Inversion on even blocks."],
+        ["Tier 1: Playfair Matrix", "EF GF IE HC FO KA DU FN KA BN VE NK", "Digraphic substitution (flattens unigrams)."],
+        ["Tier 2: Vigenère Stream", "ZF RN IR AX FZ SA QN AN VI BA OZ NV", "Polyalphabetic keystream masks symmetries."],
+        ["Tier 3A: Digraph Inversion", "FZ RN RI AX ZF SA NQ AN IV BA ZO NV", "Alternating Parity Inversion on even blocks."],
         ["Tier 3B: Dynamic Drift", "MJ ED KE ZZ EN DO EK XN LB KM OG IT", "Affine Drift Δ(i) = (3i + 7) mod 26."],
         ["Final Ciphertext", "MJEDKEZZENDOEKXNLBKMOGIT", "Transmitted challenge ciphertext (Length 24)."]
     ]
@@ -536,18 +536,18 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     story.append(Paragraph("3. Red Team Deliverables: Cryptanalysis & Mathematical Proofs", section_heading))
     story.append(Paragraph(
-        "<b>Deliverable 6 – Statistical Profiling & Technique Identification:</b> Structural cryptanalysis confirmed three foundational attributes of the cipher: (1) <i>Even Length Parity:</i> All ciphertexts have exact even length, exposing polygraphic block grouping (Playfair); (2) <i>Index of Coincidence:</i> Corpus IoC measured <b>0.0388</b>, proving multi-tier polyalphabetic diffusion; (3) <i>Linear Gradient:</i> Modular differential slope revealed &delta; = 3.",
+        "<b>Deliverable 6 – Statistical Profiling & Technique Identification:</b> All findings are computed by cca_attack.py from the public pairs only. (1) <i>Even Length Parity:</i> every ciphertext length equals the Playfair-prepared plaintext length (J→I, X filler, Z pad) in 10/10 pairs, versus the raw plaintext length in only 3/10, pointing to a Playfair-family digraphic layer; (2) <i>Index of Coincidence:</i> corpus IoC = 0.0388, close to the random baseline 0.0385, indicating a polyalphabetic layer; (3) <i>Shared Positional Keystream:</i> under the recovered Playfair matrix, all genuine pairs imply the same shift at every position (355/362 positions agree), so Tiers 2 and 3 act as one fixed position-dependent keystream, which decomposes exactly into a period-7 Vigenère key, a linear drift with δ = 3, and a swap on even digraph blocks.",
         body_style
     ))
 
     # IoC Table (Wrapped)
     ioc_raw = [
         ["Cipher Scheme / Corpus", "Index of Coincidence (IoC)", "Cryptanalytic Deduction"],
-        ["Standard English", "0.0667", "Highly biased; trivial frequency attack."],
-        ["Caesar / Monoalphabetic", "0.0655", "Vulnerable; preserves unigram frequencies."],
-        ["Single Playfair Cipher", "0.0482", "Partially flattened; retains digram bias."],
+        ["Challenge Plaintexts (English)", "0.0688", "Highly biased; trivial frequency attack."],
+        ["Caesar (k=3)", "0.0688", "Identical to plaintext: a shift only relabels letters."],
+        ["Playfair only (LABYRINTH)", "0.0551", "Partially flattened; retains digram bias."],
         ["Uniform Random Baseline", "0.0385", "Maximum theoretical entropy."],
-        ["KTCC Challenge Ciphertext", "0.0388", "Near-ideal entropy; proves multi-tier diffusion."]
+        ["KTCC Challenge Ciphertext", "0.0388", "Near random; indicates a polyalphabetic layer."]
     ]
     ioc_data = []
     for r_idx, row in enumerate(ioc_raw):
@@ -585,21 +585,21 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
             "Single-Letter Substitution",
             "Index 5 (Block 2, Char 1)",
             "Observed: 'N'<br/>Expected: 'J'<br/>Delta: +4 mod 26",
-            "At index 5, keystream K_V[5] = 13 ('N') and dynamic drift Δ(5) = 22 ('W'). Observed 'N' produces an intermediate value that violates Playfair rectangle projection from plaintext 'G'."
+            "Only index 5 disagrees with the keystream shared by every other pair; all other positions agree. Re-encrypting the plaintext with the recovered keys predicts 'J'; observed 'N' is +4 mod 26 away."
         ],
         [
             "6",
             "Parity Transposition Error",
             "Indices 2 & 3 (Block 1, Odd)",
             "Observed: 'SZ'<br/>Expected: 'ZS'<br/>Delta: Reversed",
-            "Block index b = 1 is odd. The observed ciphertext inverted characters, directly violating the even-only block parity rule (b mod 2 == 0) and disrupting all subsequent passes."
+            "Only indices 2 and 3 disagree with the shared keystream, and observed 'SZ' is exactly predicted 'ZS' reversed: two letters were transposed in block 1, which the cipher never swaps (only even blocks are swapped)."
         ],
         [
             "9",
             "Tail Desynchronization",
             "Indices 32–35 (Terminal 4 chars)",
             "Observed: 'CALF'<br/>Expected: 'RPAU'<br/>Delta: +11 mod 26",
-            "Suffix characters 'CALF' diverge from linear affine trajectory by an arbitrary constant displacement (+11 mod 26), failing to reconstruct the known word 'ROUTER'."
+            "Positions 0–31 agree with the shared keystream; the last four (32–35) all differ by the same +11 mod 26, so the tail was shifted after encryption."
         ]
     ]
     proofs_data = []
@@ -631,12 +631,12 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(Paragraph("<b>Deliverable 8 – Key Recovery & Layer Decoupling:</b>", sub_heading))
     rec_raw = [
         ["Cipher Layer", "Target Parameter", "Recovered Value", "Cryptanalytic Method Applied"],
-        ["Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Known-Plaintext Digraphic Matrix Constraint Solver"],
-        ["Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "Geometric Row-Col-Rectangle Intersection Analysis"],
-        ["Tier 2 (Polyalphabetic)", "Vigenère Keyword", "VALIANT (Length 7)", "Autocorrelation & Modular Keystream Extraction"],
-        ["Tier 3A (Transposition)", "Block Parity Inversion", "Swap on Even Blocks (b%2==0)", "Blockwise Differential Inconsistency Profiling"],
-        ["Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Linear Congruence Solver mod 26: δ·i + θ"],
-        ["Tier 3B (Affine Drift)", "Seed Offset (θ)", "7", "Base Offset Extraction at Position i=0 mod 26"]
+        ["Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Simulated annealing over 5x5 matrices, scored by cross-pair keystream agreement (355/362)"],
+        ["Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "CT length = J→I / X / Z prepared PT length in 10/10 pairs"],
+        ["Tier 2 (Polyalphabetic)", "Vigenère Keyword", "VALIANT (Length 7)", "Keystream minus drift is exactly periodic with period 7"],
+        ["Tier 3A (Transposition)", "Block Parity Inversion", "Swap on Even Blocks (b%2==0)", "Swapped orientation gives consensus only on even blocks"],
+        ["Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Exhaustive δ = 0..25: only δ = 3 leaves a period-7 residual"],
+        ["Tier 3B (Affine Drift)", "Seed Offset (θ)", "7", "Data fixes key + θ only; θ = 7 makes the key English (VALIANT)"]
     ]
     rec_data = []
     for r_idx, row in enumerate(rec_raw):
@@ -668,16 +668,16 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # Deliverable 9 & 10: Verification Table (Wrapped & Spaced Ciphertexts)
     story.append(Paragraph("<b>Deliverable 9 & 10 – Verification Evidence & Round-Trip Plaintext Recovery:</b>", sub_heading))
     verif_raw = [
-        ["#", "Challenge Ciphertext", "Recovered Plaintext", "Status", "Fidelity"],
+        ["#", "Challenge Ciphertext", "Plaintext (decrypts to prepared form)", "Status", "Fidelity"],
         ["1", "MJEDKEZZENDOEKXNLBKMOGIT", "DEFEND THE PERIMETER AT ONCE", "VERIFIED VALID", "100.0%"],
         ["2", "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF", "ZERO TRUST ARCHITECTURE SECURES DATA", "VERIFIED VALID", "100.0%"],
-        ["3", "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH", "[Rejected: Tampered at index 5]", "FLAGGED CORRUPT", "0.0%"],
+        ["3", "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH", "[Rejected: Tampered at index 5]", "FLAGGED CORRUPT", "Rejected"],
         ["4", "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR", "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY", "VERIFIED VALID", "100.0%"],
         ["5", "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP", "QUANTUM COMPUTING THREATENS TRADITIONAL RSA", "VERIFIED VALID", "100.0%"],
-        ["6", "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY", "[Rejected: Parity swapped at idx 2-3]", "FLAGGED CORRUPT", "0.0%"],
+        ["6", "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY", "[Rejected: letters transposed at idx 2-3]", "FLAGGED CORRUPT", "Rejected"],
         ["7", "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL", "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC", "VERIFIED VALID", "100.0%"],
         ["8", "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ", "AUTHENTICATION TOKEN EXPIRES SOON REFRESH", "VERIFIED VALID", "100.0%"],
-        ["9", "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF", "[Rejected: Tail displaced at idx 32-35]", "FLAGGED CORRUPT", "0.0%"],
+        ["9", "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF", "[Rejected: +11 offset at idx 32-35]", "FLAGGED CORRUPT", "Rejected"],
         ["10", "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY", "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD", "VERIFIED VALID", "100.0%"]
     ]
     verif_data = []
@@ -719,17 +719,15 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     story.append(Paragraph("4. Performance Metrics and Empirical Complexity", section_heading))
     story.append(Paragraph(
-        "Empirical benchmarks evaluated KTCC execution across payload sizes from <i>N</i> = 100 to 10,000 characters (averaged over 50 iterations):",
+        "Measured with cca_benchmark.py (best of 50 runs on one development machine; absolute times vary by hardware) for payload sizes from <i>N</i> = 100 to 10,000 characters:",
         body_style
     ))
 
     bench_raw = [
         ["Payload Length (N)", "KTCC Encrypt (ms)", "KTCC Decrypt (ms)", "Caesar Shift (ms)", "Overhead Factor", "Throughput (chars/s)"],
-        ["100 chars", "0.185 ms", "0.147 ms", "0.012 ms", "15.4×", "539,601 chars/s"],
-        ["500 chars", "1.054 ms", "0.769 ms", "0.060 ms", "17.5×", "474,442 chars/s"],
-        ["1,000 chars", "1.810 ms", "1.406 ms", "0.118 ms", "15.3×", "552,417 chars/s"],
-        ["5,000 chars", "9.326 ms", "7.332 ms", "0.558 ms", "16.7×", "536,125 chars/s"],
-        ["10,000 chars", "18.552 ms", "13.939 ms", "1.119 ms", "16.5×", "539,023 chars/s"]
+        ["100 chars", "0.124 ms", "0.099 ms", "0.021 ms", "5.9×", "824,576 chars/s"],
+        ["1,000 chars", "1.208 ms", "0.962 ms", "0.190 ms", "6.4×", "844,091 chars/s"],
+        ["10,000 chars", "11.805 ms", "9.273 ms", "1.770 ms", "6.7×", "865,425 chars/s"]
     ]
     bench_data = []
     for r_idx, row in enumerate(bench_raw):
@@ -803,7 +801,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "<b># Automated Execution & Verification Commands</b><br/>"
         "python cca_main.py --all &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run full Blue Team + Red Team demonstration<br/>"
         "python cca_main.py --red &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated Red Team cryptanalysis solver<br/>"
-        "python test_cca.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated unit test suite (7/7 tests passing)<br/>"
+        "python test_cca.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated unit test suite (8/8 tests passing)<br/>"
         "python build_report_pdf.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade PDF report<br/>"
         "python build_report_docx.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade Word DOCX report"
     )

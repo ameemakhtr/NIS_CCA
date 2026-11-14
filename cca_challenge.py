@@ -159,3 +159,10 @@ if __name__ == "__main__":
     with open("challenge_dataset.json", "w", encoding="utf-8") as f:
         json.dump(challenge_data, f, indent=2)
     print("\nDataset successfully exported to challenge_dataset.json")
+
+    # Red Team copy: no keys, no ground truth, no 'cleaned_prepared' (it reveals Playfair digraph prep).
+    public_pairs = [{k: p[k] for k in ("pair_id", "plaintext", "ciphertext", "length")}
+                    for p in challenge_data["pairs"]]
+    with open("challenge_dataset_public.json", "w", encoding="utf-8") as f:
+        json.dump({"cipher_name": challenge_data["cipher_info"]["name"], "pairs": public_pairs}, f, indent=2)
+    print("Red Team copy exported to challenge_dataset_public.json")

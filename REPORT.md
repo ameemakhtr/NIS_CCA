@@ -45,7 +45,7 @@ flowchart LR
 
     subgraph RedTeam["Red Team: Reverse-Engineering & Cryptanalysis"]
         CT --> SP["Statistical Profiling (IC ~0.0388, Even L)"]
-        SP --> AD["Differential Anomaly Detection & Inconsistency Filter"]
+        SP --> AD["Simulated Annealing: Cross-Pair Keystream Consistency"]
         AD --> BAD["Identify & Prove 3 Poisoned Pairs (Pairs 3, 6, 9)"]
         AD --> GEN["Isolate 7 Genuine Pairs"]
         GEN --> DEC["Multi-Tier Decoupling & Key Recovery"]
@@ -68,11 +68,11 @@ flowchart LR
 
 ### Detailed Architectural Description
 * **Historical Foundation:** Named in honor of **Abu Yusuf Ya'qub ibn Ishaq al-Kindi (801–873 CE)**, universally recognized as the Father of Cryptanalysis. Al-Kindi authored *Risalah fi Istikhraj al-Mu'amma* (*Manuscript on Deciphering Cryptographic Messages*) at Baghdad's House of Wisdom, inventing frequency analysis.
-* **Shannon's Product Cipher Criterion:** Cascades three distinct mathematical operators to eliminate classical single-stage vulnerabilities, satisfying Claude Shannon's confusion and diffusion criteria.
+* **Shannon's Product Cipher Criterion:** Cascades three distinct operators following Claude Shannon's product-cipher idea of combining confusion and diffusion.
 * **Three Cascaded Layers:**
-  1. *Tier 1 (Classical Digraphic Substitution):* 5x5 Keyed Playfair Matrix to eradicate single-character frequency distribution.
+  1. *Tier 1 (Classical Digraphic Substitution):* 5x5 Keyed Playfair Matrix to flatten single-character frequencies (IoC 0.0688 → 0.0551 on the challenge plaintexts).
   2. *Tier 2 (Classical Polyalphabetic Substitution):* Periodic Keyed Vigenère Substitution to mask geometric digram symmetries.
-  3. *Tier 3 (Team-Designed Dynamic Technique):* Alternating Digraph Inversion & Positional Dynamic Drift (ADI-PDD) providing non-linear permutation and arithmetic affine diffusion.
+  3. *Tier 3 (Team-Designed Dynamic Technique):* Alternating Digraph Inversion & Positional Dynamic Drift (ADI-PDD) providing a fixed in-block transposition and a position-dependent affine shift.
 
 ---
 
@@ -222,9 +222,9 @@ Step-by-step cryptographic trace for **Pair #1** (`DEFEND THE PERIMETER AT ONCE`
 | :--- | :--- | :--- |
 | **Raw Input** | `DEFEND THE PERIMETER AT ONCE` | Original plaintext. |
 | **Digraph Preparation** | `DE FE ND TH EP ER IM ET ER AT ON CE` | Filtered, uppercase, paired into 12 digraphs. |
-| **Tier 1: Playfair** | `ED EF MC HC BO LA LD HG LA LA VO TD` | Digraphic substitution masks unigram frequencies. |
-| **Tier 2: Vigenère** | `ZY PM ED PQ BO YN WR HU LA SA GU MO` | Polyalphabetic keystream breaks geometric symmetries. |
-| **Tier 3A: ADI Inversion** | `YZ PM DE PQ OB YN RW HU AL SA UG MO` | Parity inversion on even digraph blocks (0, 2, 4...). |
+| **Tier 1: Playfair** | `EF GF IE HC FO KA DU FN KA BN VE NK` | Digraphic substitution masks unigram frequencies. |
+| **Tier 2: Vigenère** | `ZF RN IR AX FZ SA QN AN VI BA OZ NV` | Polyalphabetic keystream breaks geometric symmetries. |
+| **Tier 3A: ADI Inversion** | `FZ RN RI AX ZF SA NQ AN IV BA ZO NV` | Parity inversion on even digraph blocks (0, 2, 4...). |
 | **Tier 3B: Dynamic Drift** | `MJ ED KE ZZ EN DO EK XN LB KM OG IT` | Positional affine drift $\Delta(i) = (3i + 7) \pmod{26}$. |
 | **Final Ciphertext** | `MJEDKEZZENDOEKXNLBKMOGIT` | Transmitted challenge ciphertext (Length 24). |
 
@@ -234,32 +234,40 @@ Step-by-step cryptographic trace for **Pair #1** (`DEFEND THE PERIMETER AT ONCE`
 
 ## Deliverable 6: Statistical Profiling and Technique Identification
 
+All findings in Deliverables 6–10 are computed by `cca_attack.py` from the public pairs (`challenge_dataset_public.json`) only. The attack is never given any key; `test_cca.py` re-runs it against a cipher with unseen keys (`MONARCHY`, `SECRET`, δ=5, θ=11) to prove this.
+
 ### 1. Structural Invariant: Digraphic Even Length
-Across all 10 challenge pairs, every ciphertext has an exact even length ($N \equiv 0 \pmod{2}$), pointing directly to polygraphic block grouping (Playfair).
+Every ciphertext has even length ($N \equiv 0 \pmod{2}$), and its length equals the Playfair-prepared plaintext length (J→I, X filler, Z pad) in **10/10** pairs, versus the raw plaintext length in only **3/10**. This points to a Playfair-family digraphic layer.
 
 ### 2. Index of Coincidence (IoC) Profiling
 
 $$IC = \frac{\sum_{i=A}^Z f_i (f_i - 1)}{N (N - 1)}$$
 
+Values reproduced by `cca_benchmark.py` over the 10 challenge plaintexts (350 letters):
+
 | Cipher Scheme | Measured IoC | Cryptanalytic Deductions |
 | :--- | :---: | :--- |
-| **Natural English Text** | $0.0667$ | Highly uneven; heavy bias toward 'E', 'T', 'A'. |
-| **Caesar / Monoalphabetic** | $0.0655$ | Complete frequency leakage; trivial to break. |
-| **Single Playfair Matrix** | $0.0482$ | Digraphic frequencies partially preserved. |
-| **Uniform Random Baseline** | $0.0385$ | Maximum theoretical entropy. |
-| **KTCC Challenge Ciphertext** | **0.0388** | Near-random distribution; proves multi-tier polyalphabetic diffusion. |
+| **Challenge Plaintexts (English)** | $0.0688$ | Highly uneven; heavy bias toward 'E', 'T', 'A'. |
+| **Caesar (k=3)** | $0.0688$ | Identical to plaintext: a shift only relabels letters. |
+| **Playfair only (`LABYRINTH`)** | $0.0551$ | Partially flattened; digraphic bias remains. |
+| **Vigenère only (`VALIANT`)** | $0.0441$ | Flattened further by the polyalphabetic shift. |
+| **Uniform Random Baseline** | $0.0385$ | $1/26$. |
+| **KTCC Challenge Ciphertext** | **0.0388** | Near random; indicates a polyalphabetic layer. |
+
+### 3. Shared Positional Keystream (the decisive weakness)
+Tiers 2 and 3 only add shifts that depend on the character position, plus a fixed swap. Together they act as **one fixed position-dependent keystream**. So under the correct Playfair matrix, every genuine pair implies the *same* shift at each position. Simulated annealing over Playfair matrices, scored by how many pairs agree, converged to a matrix where **355 of 362** positions agree. The 7 disagreeing positions are exactly the tampered characters.
 
 ---
 
 ## Deliverable 7: Rigorous Identification and Mathematical Proofs of Corrupted Pairs
 
-The Red Team differential consistency engine uniquely isolated **Pairs 3, 6, and 9** as corrupted:
+A pair is flagged when its implied keystream disagrees with the consensus of the other pairs. This isolated **Pairs 3, 6, and 9**:
 
-| Pair # | Anomaly Category | Exact Location | Observed vs. Expected | Formal Mathematical Error Proof |
+| Pair # | Anomaly Category | Exact Location | Observed vs. Expected | Evidence (generated by `cca_attack.py`) |
 | :---: | :--- | :--- | :--- | :--- |
-| **3** | Substitution Tampering | Index 5 (Block 2, Char 1) | Observed: `'N'`<br/>Expected: `'J'`<br/>Delta: $+4 \pmod{26}$ | Inverting drift and Vigenère shift yields intermediate value that violates Playfair rectangle projection from plaintext `'G'`. |
-| **6** | Parity Transposition Error | Indices 2 & 3 (Block 1, Odd) | Observed: `'SZ'`<br/>Expected: `'ZS'`<br/>Delta: Inverted | Block index $b = 1$ is odd. The observed ciphertext inverted characters, violating the even-block parity rule ($b \equiv 0 \pmod{2}$). |
-| **9** | Tail Desynchronization | Indices 32–35 (Terminal 4 chars) | Observed: `'CALF'`<br/>Expected: `'RPAU'`<br/>Delta: $+11 \pmod{26}$ | Suffix characters diverge from the linear affine trajectory by an arbitrary constant displacement ($+11 \pmod{26}$). |
+| **3** | Substitution Tampering | Index 5 (Block 2, Char 1) | Observed: `'N'`<br/>Expected: `'J'`<br/>Delta: $+4 \pmod{26}$ | Only index 5 disagrees with the keystream shared by every other pair. All other positions agree. |
+| **6** | Transposition Error | Indices 2 & 3 (Block 1, Odd) | Observed: `'SZ'`<br/>Expected: `'ZS'`<br/>Delta: Reversed | Only indices 2–3 disagree, and the observed pair is exactly the prediction reversed. Block 1 is odd, and the cipher only swaps even blocks. |
+| **9** | Tail Desynchronization | Indices 32–35 (Terminal 4 chars) | Observed: `'CALF'`<br/>Expected: `'RPAU'`<br/>Delta: $+11 \pmod{26}$ | Positions 0–31 agree. The last four all differ by the same $+11 \pmod{26}$, so the tail was shifted after encryption. |
 
 ---
 
@@ -267,12 +275,14 @@ The Red Team differential consistency engine uniquely isolated **Pairs 3, 6, and
 
 | Layer | Parameter | Recovered Value | Method of Discovery |
 | :--- | :--- | :--- | :--- |
-| **Tier 1** | Playfair Keyword | `LABYRINTH` | Known-Plaintext Digraphic Matrix Constraint Solver |
-| **Tier 1** | Alphabet Grid | 25 letters (I/J merged) | Geometric Row-Column-Rectangle Intersection Analysis |
-| **Tier 2** | Vigenère Keyword | `VALIANT` (Length 7) | Autocorrelation & Modular Keystream Extraction |
-| **Tier 3A** | Transposition Rule | Swap on even blocks ($b \pmod 2 == 0$) | Blockwise Differential Inconsistency Profiling |
-| **Tier 3B** | Multiplier ($\delta$) | `3` | Linear Congruence mod 26: $\Delta(i) = \delta \cdot i + \theta$ |
-| **Tier 3B** | Offset ($\theta$) | `7` | Base offset extraction at index $i = 0$ |
+| **Tier 1** | Playfair Keyword | `LABYRINTH` | Simulated annealing over 5x5 matrices scored by cross-pair keystream agreement (355/362). The keyword is the one of the 25 equivalent row/column rotations whose tail is the unused alphabet in order. |
+| **Tier 1** | Alphabet Grid | 25 letters (I/J merged) | CT length = J→I / X / Z prepared PT length in 10/10 pairs |
+| **Tier 2** | Vigenère Keyword | `VALIANT` (Length 7) | After removing the drift, the keystream is exactly periodic with period 7 (the only fit at the smallest period) |
+| **Tier 3A** | Transposition Rule | Swap on even blocks ($b \pmod 2 == 0$) | Per block, the swapped orientation gives consensus only on even blocks |
+| **Tier 3B** | Multiplier ($\delta$) | `3` | Exhaustive $\delta = 0..25$: only $\delta = 3$ leaves a period-7 residual |
+| **Tier 3B** | Offset ($\theta$) | `7` | The data fixes only $V[i] + \theta$. All 26 splits encrypt identically, and $\theta = 7$ is the one that makes the key an English word. |
+
+**Layer order** was also derived, not assumed. Of the four possible orders of Vigenère, swap and drift, only *Vigenère → swap → drift* fits the keystream exactly.
 
 ---
 
@@ -301,43 +311,42 @@ Received Ciphertext (C)
 Original Plaintext (P)
 ```
 
-**Bijective Invertibility Proof:** Because each stage is a mathematical bijection on $\mathbb{Z}_{26}^{N}$:
-$$D(C) = E_1^{-1}(E_2^{-1}(E_3^{-1}(E_3(E_2(E_1(P)))))) = P$$
+**Invertibility:** The drift, swap and Vigenère stages are bijections on $\mathbb{Z}_{26}^{N}$, and Playfair is a bijection on prepared digraphs. Therefore:
+$$D(C) = E_1^{-1}(E_2^{-1}(E_3^{-1}(E_3(E_2(E_1(P')))))) = P'$$
+Here $P'$ is the *prepared* plaintext. The preparation step (dropping spaces, J→I, X filler, Z pad) is lossy, so decryption returns $P'$, not the raw $P$.
 
 ---
 
 ## Deliverable 10: Verification Evidence and Round-Trip Plaintext Inversion
 
-| Pair # | Challenge Ciphertext | Recovered Plaintext | Match Status | Verification Fidelity |
+| Pair # | Challenge Ciphertext | Plaintext (decrypts to its prepared form) | Match Status | Verification Fidelity |
 | :---: | :--- | :--- | :---: | :---: |
 | **1** | `MJEDKEZZENDOEKXNLBKMOGIT` | `DEFEND THE PERIMETER AT ONCE` | **VERIFIED VALID** | **100.0% Exact Match** |
 | **2** | `RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF` | `ZERO TRUST ARCHITECTURE SECURES DATA` | **VERIFIED VALID** | **100.0% Exact Match** |
-| **3** | `JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH` | *[Rejected: Tampered at index 5]* | **FLAGGED CORRUPT** | **0.0% (Intentional Flaw)** |
+| **3** | `JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH` | *[Rejected: Tampered at index 5]* | **FLAGGED CORRUPT** | **Rejected (does not round-trip)** |
 | **4** | `ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR` | `INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY` | **VERIFIED VALID** | **100.0% Exact Match** |
 | **5** | `ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP` | `QUANTUM COMPUTING THREATENS TRADITIONAL RSA` | **VERIFIED VALID** | **100.0% Exact Match** |
-| **6** | `STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY` | *[Rejected: Parity swapped at idx 2-3]* | **FLAGGED CORRUPT** | **0.0% (Intentional Flaw)** |
+| **6** | `STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY` | *[Rejected: letters transposed at idx 2-3]* | **FLAGGED CORRUPT** | **Rejected (does not round-trip)** |
 | **7** | `AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL` | `FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC` | **VERIFIED VALID** | **100.0% Exact Match** |
 | **8** | `CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ` | `AUTHENTICATION TOKEN EXPIRES SOON REFRESH` | **VERIFIED VALID** | **100.0% Exact Match** |
-| **9** | `MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF` | *[Rejected: Tail displaced at idx 32-35]* | **FLAGGED CORRUPT** | **0.0% (Intentional Flaw)** |
+| **9** | `MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF` | *[Rejected: +11 offset at idx 32-35]* | **FLAGGED CORRUPT** | **Rejected (does not round-trip)** |
 | **10** | `HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY` | `ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD` | **VERIFIED VALID** | **100.0% Exact Match** |
 
-* **Verification Summary:** All 7 genuine challenge pairs decrypted with 100% character fidelity. All 3 corrupted pairs were rejected with mathematical precision. Automated test suite (`test_cca.py`): **7/7 Tests Passed**.
+* **Verification Summary:** The cipher was rebuilt from the *recovered* keys only. All 7 genuine pairs re-encrypt to the exact challenge ciphertext and decrypt to their prepared plaintext. All 3 corrupted pairs fail. Automated test suite (`test_cca.py`): **8/8 Tests Passed**.
 
 ---
 
 ## 5. Performance Benchmarks and Complexity Analysis
 
-Empirical benchmarks were conducted over 50 iterations across varying payload sizes:
+Measured with `cca_benchmark.py` (best of 50 runs on one development machine, Python 3.14). Absolute times vary by hardware, but the linear scaling does not.
 
 | Payload Size ($N$) | KTCC Encrypt (ms) | KTCC Decrypt (ms) | Caesar Shift (ms) | Overhead Factor | Throughput (chars/s) |
 | :---: | :---: | :---: | :---: | :---: | :---: |
-| **100 chars** | 0.185 ms | 0.147 ms | 0.012 ms | $15.4\times$ | 539,601 chars/s |
-| **500 chars** | 1.054 ms | 0.769 ms | 0.060 ms | $17.5\times$ | 474,442 chars/s |
-| **1,000 chars** | 1.810 ms | 1.406 ms | 0.118 ms | $15.3\times$ | 552,417 chars/s |
-| **5,000 chars** | 9.326 ms | 7.332 ms | 0.558 ms | $16.7\times$ | 536,125 chars/s |
-| **10,000 chars** | 18.552 ms | 13.939 ms | 1.119 ms | $16.5\times$ | 539,023 chars/s |
+| **100 chars** | 0.124 ms | 0.099 ms | 0.021 ms | $5.9\times$ | 824,576 chars/s |
+| **1,000 chars** | 1.208 ms | 0.962 ms | 0.190 ms | $6.4\times$ | 844,091 chars/s |
+| **10,000 chars** | 11.805 ms | 9.273 ms | 1.770 ms | $6.7\times$ | 865,425 chars/s |
 
-* **Complexity:** Time complexity is strictly linear $\mathcal{O}(N)$. Memory complexity is $\mathcal{O}(N)$ for buffer allocations with $\mathcal{O}(1)$ constant storage for the 5x5 matrix. The cipher sustains a throughput $> 540,000$ characters/second.
+* **Complexity:** Time complexity is strictly linear $\mathcal{O}(N)$. Memory complexity is $\mathcal{O}(N)$ for buffer allocations with $\mathcal{O}(1)$ constant storage for the 5x5 matrix. Measured throughput was above 800,000 characters/second on the test machine.
 
 ---
 
@@ -366,11 +375,14 @@ python cca_main.py --red
 # 3. Inspect Blue Team Deliverables & Dataset:
 python cca_main.py --blue
 
-# 4. Run Automated Test Suite (7/7 Tests Passing):
+# 4. Run Automated Test Suite (8/8 Tests Passing):
 python test_cca.py
 
 # 5. Interactive Encryption/Decryption Terminal:
 python cca_main.py --interactive
+
+# 6. Reproduce every IoC and timing number in this report:
+python cca_benchmark.py
 
 # 6. Recompile Publication-Grade PDF and Word Reports:
 python build_report_pdf.py

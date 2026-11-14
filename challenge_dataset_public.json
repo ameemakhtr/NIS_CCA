@@ -1,0 +1,65 @@
+{
+  "cipher_name": "Al-Kindi Tri-Tiered Composite Cipher (KTCC)",
+  "pairs": [
+    {
+      "pair_id": 1,
+      "plaintext": "DEFEND THE PERIMETER AT ONCE",
+      "ciphertext": "MJEDKEZZENDOEKXNLBKMOGIT",
+      "length": 24
+    },
+    {
+      "pair_id": 2,
+      "plaintext": "ZERO TRUST ARCHITECTURE SECURES DATA",
+      "ciphertext": "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF",
+      "length": 32
+    },
+    {
+      "pair_id": 3,
+      "plaintext": "CRYPTOGRAPHIC PROTOCOL FAILURE DETECTED",
+      "ciphertext": "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH",
+      "length": 36
+    },
+    {
+      "pair_id": 4,
+      "plaintext": "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY",
+      "ciphertext": "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR",
+      "length": 40
+    },
+    {
+      "pair_id": 5,
+      "plaintext": "QUANTUM COMPUTING THREATENS TRADITIONAL RSA",
+      "ciphertext": "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP",
+      "length": 40
+    },
+    {
+      "pair_id": 6,
+      "plaintext": "MALWARE EXFILTRATING SENSITIVE AUDIT LOGS",
+      "ciphertext": "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY",
+      "length": 38
+    },
+    {
+      "pair_id": 7,
+      "plaintext": "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC",
+      "ciphertext": "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL",
+      "length": 40
+    },
+    {
+      "pair_id": 8,
+      "plaintext": "AUTHENTICATION TOKEN EXPIRES SOON REFRESH",
+      "ciphertext": "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ",
+      "length": 38
+    },
+    {
+      "pair_id": 9,
+      "plaintext": "DENIAL OF SERVICE ATTACK FLOODS ROUTER",
+      "ciphertext": "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF",
+      "length": 36
+    },
+    {
+      "pair_id": 10,
+      "plaintext": "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD",
+      "ciphertext": "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY",
+      "length": 38
+    }
+  ]
+}

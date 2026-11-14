@@ -118,6 +118,23 @@ class TestAlKindiCompositeCCA(unittest.TestCase):
             else:
                 self.assertTrue(entry["matches_original"])
 
+    def test_red_team_attack_is_key_free(self):
+        # Different keys the attack has never seen: fails if keys are ever hardcoded again.
+        from cca_challenge import CHALLENGE_PLAINTEXTS
+        cipher = AlKindiCompositeCipher("MONARCHY", "SECRET", delta=5, theta=11)
+        pairs = [{"pair_id": i + 1, "plaintext": p, "ciphertext": cipher.encrypt(p)[0]}
+                 for i, p in enumerate(CHALLENGE_PLAINTEXTS)]
+        ct = pairs[1]["ciphertext"]
+        pairs[1]["ciphertext"] = ct[:7] + chr((ord(ct[7]) - 65 + 3) % 26 + 65) + ct[8:]
+
+        analyzer = RedTeamCryptanalysis(pairs)
+        keys = analyzer.recover_keys_and_sequence()
+        self.assertEqual(keys["tier1_recovered_key"], "MONARCHY")
+        self.assertEqual(keys["tier3_recovered_parameters"]["delta (slope multiplier)"], 5)
+        self.assertEqual(analyzer.audit_and_detect_invalid_pairs()["identified_invalid_pair_ids"], [2])
+        # Vigenere key + theta are only fixed up to a shared offset, so check behaviour, not the word.
+        self.assertEqual(sum(e["matches_original"] for e in analyzer.verify_roundtrip_decryption()), 9)
+
 
 if __name__ == "__main__":
     unittest.main()
