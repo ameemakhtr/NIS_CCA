@@ -11,7 +11,7 @@
 **Instructor:** Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)  
 **Total Marks:** 10  
 **Group Size:** 05 Members  
-**Submission Deadline:** 8th November 2026  
+**Submission Date:** 15th November 2026  
 
 ---
 
@@ -59,6 +59,8 @@ flowchart LR
 
 ---
 
+> **Disclosure note:** The keys, full algorithm and the 3 corrupted pairs below are published as Blue Team Deliverable 5 (final explanation after the challenge). The Red Team challenge has concluded. For any new challenge, share only `challenge_dataset_public.json`.
+
 # PART I: BLUE TEAM DELIVERABLES (DELIVERABLES 1 – 5)
 
 ## Deliverable 1: Unique Cipher Name and Comprehensive Description
@@ -87,8 +89,9 @@ Plaintext (P)
 [Step 0: Preprocessing & Digraph Conditioning]
   - Filter non-alphabetical characters; capitalize A-Z
   - Map 'J' -> 'I'
-  - Insert 'X' between identical letters in a digraph (e.g., "EE" -> "EX", "EX")
-  - Append 'Z' if total length is odd
+  - Insert 'X' between identical letters in a digraph (e.g., "BALLOON" -> "BA LX LO ON");
+    use 'Q' instead if the doubled letter is 'X' ("XX" -> "XQ")
+  - Append 'Z' if total length is odd; use 'X' instead if the last letter is 'Z' ("JAZ" -> "IA ZX")
      │
      ▼
 [Tier 1: Playfair 5x5 Digraphic Transformation]
@@ -122,7 +125,7 @@ Input : Plaintext P, Playfair Key K_P, Vigenère Key K_V, Drift Parameters (delt
 Output: Ciphertext C
 
 1. P_clean <- Clean text, map 'J' -> 'I'
-2. Digraphs <- Split into pairs (c1, c2); split doubles with 'X'; pad odd with 'Z'
+2. Digraphs <- Split into pairs (c1, c2); split doubles with 'X' ('Q' if the double is XX); pad odd with 'Z' ('X' if the last letter is Z)
 3. S1 <- Playfair_Encrypt(Digraphs, K_P)
 4. S2 <- Array of length Length(S1)
 5. For i <- 0 to Length(S1) - 1 Do
@@ -350,7 +353,19 @@ Measured with `cca_benchmark.py` (best of 50 runs on one development machine, Py
 
 ---
 
-## 6. Suggestions for Improving the Cipher's Security
+## 6. CCA Attribute Mapping & Resources
+
+How the CCA attributes named in the activity brief appear in this submission:
+
+| CCA Attribute | Application in This Activity | Evidence |
+| :--- | :--- | :--- |
+| **CCA-1: Range of Resources** | Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, length-parity test, simulated annealing, exhaustive δ and period search); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub. | cca_cipher.py, cca_attack.py, cca_benchmark.py, test_cca.py (8 tests), challenge_dataset_public.json |
+| **CCA-3: Innovation** | Blue Team: team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift. Red Team: a key-free fitness function (agreement of the implied keystream across pairs) that both recovers the Playfair matrix and exposes the corrupted pairs. | Deliverables 1–3 (design); Deliverables 6–8 (attack) |
+| **CCA-5: Familiarity** | Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to an unfamiliar three-layer composite. Layer order and parameters were derived from the data rather than assumed, and the Vigenère key / θ equivalence was identified. | Deliverables 8–10; test_red_team_attack_is_key_free recovers keys it has never seen (MONARCHY, δ = 5) |
+
+---
+
+## 7. Suggestions for Improving the Cipher's Security
 
 1. **Autokey Keystream Dynamic Scheduling:** Replace periodic Vigenère repetitions with an autokey mechanism ($K[i] = P[i - L_V]$) to eliminate keystream periodicity.
 2. **Non-Linear S-Box Insertion:** Introduce non-linear substitution (AES/DES S-box style) between Tier 2 and Tier 3 to break linear modular solvability over $\mathbb{Z}_{26}$.
@@ -359,7 +374,7 @@ Measured with `cca_benchmark.py` (best of 50 runs on one development machine, Py
 
 ---
 
-## 7. Code Submission & Execution Details
+## 8. Code Submission & Execution Details
 
 All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at:  
 **Repository Link:** [https://github.com/ameemakhtr/NIS_CCA](https://github.com/ameemakhtr/NIS_CCA)
@@ -391,7 +406,7 @@ python build_report_docx.py
 
 ---
 
-## 8. Academic References
+## 9. Academic References
 
 1. Al-Kindi, Abu Yusuf Ya'qub ibn Ishaq (c. 850 CE). *Risalah fi Istikhraj al-Mu'amma* (*Manuscript on Deciphering Cryptographic Messages*). House of Wisdom, Baghdad.
 2. Shannon, Claude E. (1949). "Communication Theory of Secrecy Systems." *Bell System Technical Journal*, 28(4), 656–715.

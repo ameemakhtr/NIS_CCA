@@ -287,7 +287,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
 
     story.append(Spacer(1, 32))
     story.append(Paragraph("<b>Submitted to:</b> Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)", body_style))
-    story.append(Paragraph("<b>Submission Date:</b> November 08, 2026", body_style))
+    story.append(Paragraph("<b>Submission Date:</b> November 15, 2026", body_style))
     story.append(PageBreak())
 
     # =========================================================
@@ -339,7 +339,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     algo1_lines = (
         "<b>Algorithm 1: KTCC Encryption Pipeline</b><br/>"
         "1. <i>P<sub>clean</sub></i> &larr; Filter uppercase A-Z from <i>P</i>; replace 'J' with 'I'<br/>"
-        "2. Form digraphs (<i>c</i><sub>1</sub>, <i>c</i><sub>2</sub>); insert 'X' between identical letters; pad odd length with 'Z'<br/>"
+        "2. Form digraphs (<i>c</i><sub>1</sub>, <i>c</i><sub>2</sub>); insert 'X' between identical letters ('Q' if XX); pad odd length with 'Z' ('X' if last letter is Z)<br/>"
         "3. <b>Tier 1:</b> <i>S</i><sub>1</sub> &larr; Playfair_Encrypt(Digraphs, 5x5 Matrix Key: <code>LABYRINTH</code>)<br/>"
         "4. <b>Tier 2:</b> For <i>i</i> = 0 to <i>N</i>-1: <i>S</i><sub>2</sub>[<i>i</i>] &larr; (<i>S</i><sub>1</sub>[<i>i</i>] + <i>K<sub>V</sub></i>[<i>i</i> mod 7]) mod 26 (Key: <code>VALIANT</code>)<br/>"
         "5. <b>Tier 3A:</b> For block <i>b</i> = 0 to (<i>N</i>/2)-1: If <i>b</i> mod 2 == 0: Swap(<i>S</i><sub>2</sub>[2<i>b</i>], <i>S</i><sub>2</sub>[2<i>b</i>+1])<br/>"
@@ -389,7 +389,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         bullet_style
     ))
     story.append(Paragraph(
-        "&bull; <b>Conditioning Rules:</b> All text uppercase; 'J' replaced with 'I'; duplicate digraph letters split with 'X'; odd terminal messages padded with 'Z'.",
+        "&bull; <b>Conditioning Rules:</b> All text uppercase; 'J' replaced with 'I'; duplicate digraph letters split with 'X' ('Q' when the doubled letter is 'X'); odd-length messages padded with 'Z' ('X' when the last letter is 'Z').",
         bullet_style
     ))
 
@@ -756,12 +756,42 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "<b>Asymptotic Scaling:</b> Time complexity is strictly linear <i>O(N)</i> across all three stages (Playfair: <i>N/2</i> lookups; Vigenère: <i>N</i> modular shifts; ADI-PDD: <i>N/4</i> swaps and <i>N</i> affine operations). Memory is <i>O(N)</i> with constant <i>O(1)</i> matrix storage.",
         body_style
     ))
+    story.append(Spacer(1, 6))
+
+    # =========================================================
+    # SECTION 5: CCA ATTRIBUTE MAPPING (no self-grading)
+    # =========================================================
+    story.append(Paragraph("5. CCA Attribute Mapping & Resources", section_heading))
+    story.append(Paragraph('How the CCA attributes named in the activity brief appear in this submission:', body_style))
+    cca_raw = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, length-parity test, simulated annealing, exhaustive δ and period search); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_attack.py, cca_benchmark.py, test_cca.py (8 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Blue Team: team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift. Red Team: a key-free fitness function (agreement of the implied keystream across pairs) that both recovers the Playfair matrix and exposes the corrupted pairs.', 'Deliverables 1–3 (design); Deliverables 6–8 (attack)'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to an unfamiliar three-layer composite. Layer order and parameters were derived from the data rather than assumed, and the Vigenère key / θ equivalence was identified.", 'Deliverables 8–10; test_red_team_attack_is_key_free recovers keys it has never seen (MONARCHY, δ = 5)')]
+    cca_data = []
+    for r_idx, row in enumerate(cca_raw):
+        p_row = []
+        for c_idx, val in enumerate(row):
+            if r_idx == 0:
+                p_row.append(Paragraph(val, th_style))
+            elif c_idx == 0:
+                p_row.append(Paragraph(val, td_bold))
+            else:
+                p_row.append(Paragraph(val, td_style))
+        cca_data.append(p_row)
+    t_cca = Table(cca_data, colWidths=[1.4*inch, 3.5*inch, 2.0*inch])
+    t_cca.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
+        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
+        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
+        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
+    ]))
+    story.append(t_cca)
     story.append(PageBreak())
 
     # =========================================================
-    # SECTION 5: SUGGESTIONS FOR IMPROVEMENT
+    # SECTION 6: SUGGESTIONS FOR IMPROVEMENT
     # =========================================================
-    story.append(Paragraph("5. Suggestions for Improving the Cipher's Security", section_heading))
+    story.append(Paragraph("6. Suggestions for Improving the Cipher's Security", section_heading))
     story.append(Paragraph(
         "To elevate KTCC resilience against advanced known-plaintext algebraic attacks without increasing asymptotic complexity:",
         body_style
@@ -789,7 +819,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 6: CODE SUBMISSION & EXECUTION DETAILS
     # =========================================================
-    story.append(Paragraph("6. Code Submission & Execution Details", section_heading))
+    story.append(Paragraph("7. Code Submission & Execution Details", section_heading))
     story.append(Paragraph(
         "All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at: <b><u>https://github.com/ameemakhtr/NIS_CCA</u></b>",
         body_style
@@ -818,7 +848,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 7: REFERENCES
     # =========================================================
-    story.append(Paragraph("7. Academic References", section_heading))
+    story.append(Paragraph("8. Academic References", section_heading))
     refs = [
         "1. Al-Kindi, Abu Yusuf Ya'qub ibn Ishaq (c. 850 CE). <i>Risalah fi Istikhraj al-Mu'amma</i> (Manuscript on Deciphering Cryptographic Messages). House of Wisdom, Baghdad.",
         "2. Shannon, Claude E. (1949). 'Communication Theory of Secrecy Systems.' <i>Bell System Technical Journal</i>, 28(4), 656–715.",

@@ -42,6 +42,10 @@ In accordance with PEC / Washington Accord CLO3 (Design of Security Mechanisms),
 
 ---
 
+> **Disclosure note:** This repository publishes the keys, algorithm and corrupted pairs as Blue Team Deliverable 5 (final explanation after the challenge). The Red Team challenge has concluded. For any new challenge, share only `challenge_dataset_public.json`.
+
+---
+
 ## 📊 Summary Comparison: KTCC vs. Classical Primitives
 
 | Metric / Dimension | Caesar Shift | Standard Playfair | Standard Vigenère | KTCC Composite Cipher |

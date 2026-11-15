@@ -254,7 +254,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_date = doc.add_paragraph()
     p_date.alignment = WD_ALIGN_PARAGRAPH.CENTER
     p_date.paragraph_format.space_after = Pt(4)
-    r_date = p_date.add_run("Submission Date: November 08, 2026")
+    r_date = p_date.add_run("Submission Date: November 15, 2026")
     r_date.font.name = 'Times New Roman'
     r_date.font.size = Pt(11)
 
@@ -308,7 +308,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     add_callout_box(doc, [
         "Algorithm 1: KTCC Encryption Pipeline",
         "1. P_clean <- Filter uppercase A-Z from P; replace 'J' with 'I'",
-        "2. Form digraphs (c1, c2); insert 'X' between identical letters; pad odd length with 'Z'",
+        "2. Form digraphs (c1, c2); insert 'X' between identical letters ('Q' if XX); pad odd length with 'Z' ('X' if last letter is Z)",
         "3. Tier 1: S_1 <- Playfair_Encrypt(Digraphs, 5x5 Matrix Key: LABYRINTH)",
         "4. Tier 2: For i = 0 to N-1: S_2[i] <- (S_1[i] + K_V[i mod 7]) mod 26 (Key: VALIANT)",
         "5. Tier 3A: For block b = 0 to (N/2)-1: If b mod 2 == 0: Swap(S_2[2b], S_2[2b+1])",
@@ -328,7 +328,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     add_bullet_item(doc, "Tier 1 Key & Matrix:", "Keyword LABYRINTH (9 characters). 'I' and 'J' share cell (1, 0). Remaining letters appended alphabetically.")
     add_bullet_item(doc, "Tier 2 Key:", "Vigenère keyword VALIANT (Length 7). Shifts: [21, 0, 11, 8, 0, 13, 19] modulo 26.")
     add_bullet_item(doc, "Tier 3 Parameters:", "Parity swap on even digraph blocks (b mod 2 == 0); Dynamic drift multiplier δ = 3, seed offset θ = 7.")
-    add_bullet_item(doc, "Conditioning Rules:", "All text capitalized; 'J' -> 'I'; duplicate digraph letters split with 'X'; odd terminal messages padded with 'Z'.")
+    add_bullet_item(doc, "Conditioning Rules:", "All text capitalized; 'J' -> 'I'; duplicate digraph letters split with 'X' ('Q' when the doubled letter is 'X'); odd-length messages padded with 'Z' ('X' when the last letter is 'Z').")
 
     # 5x5 Matrix Table
     mat_data = [
@@ -669,12 +669,48 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     )
 
     # =========================================================
-    # SECTION 5: SUGGESTIONS FOR IMPROVEMENT
+    # SECTION 5: CCA ATTRIBUTE MAPPING (no self-grading)
+    # =========================================================
+    p_s5m = doc.add_paragraph()
+    p_s5m.paragraph_format.space_before = Pt(8)
+    p_s5m.paragraph_format.space_after = Pt(6)
+    r_s5m = p_s5m.add_run("5. CCA Attribute Mapping & Resources")
+    r_s5m.font.name = 'Times New Roman'
+    r_s5m.font.size = Pt(14)
+    r_s5m.bold = True
+    r_s5m.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
+
+    doc.add_paragraph('How the CCA attributes named in the activity brief appear in this submission:')
+    cca_data = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, length-parity test, simulated annealing, exhaustive δ and period search); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_attack.py, cca_benchmark.py, test_cca.py (8 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Blue Team: team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift. Red Team: a key-free fitness function (agreement of the implied keystream across pairs) that both recovers the Playfair matrix and exposes the corrupted pairs.', 'Deliverables 1–3 (design); Deliverables 6–8 (attack)'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to an unfamiliar three-layer composite. Layer order and parameters were derived from the data rather than assumed, and the Vigenère key / θ equivalence was identified.", 'Deliverables 8–10; test_red_team_attack_is_key_free recovers keys it has never seen (MONARCHY, δ = 5)')]
+    t_cca = doc.add_table(rows=len(cca_data), cols=3)
+    t_cca.alignment = WD_TABLE_ALIGNMENT.CENTER
+    for r_idx, row_vals in enumerate(cca_data):
+        row = t_cca.rows[r_idx]
+        for c_idx, val in enumerate(row_vals):
+            cell = row.cells[c_idx]
+            p = cell.paragraphs[0]
+            p.paragraph_format.space_before = Pt(2)
+            p.paragraph_format.space_after = Pt(2)
+            r = p.add_run(val)
+            r.font.name = 'Times New Roman'
+            r.font.size = Pt(8.5)
+            if r_idx == 0:
+                r.bold = True
+                set_cell_background(cell, "2C3E50")
+                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+            elif c_idx == 0:
+                r.bold = True
+            if r_idx > 0 and r_idx % 2 == 1:
+                set_cell_background(cell, "F8FAFC")
+            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
+
+    # =========================================================
+    # SECTION 6: SUGGESTIONS FOR IMPROVEMENT
     # =========================================================
     p_s5 = doc.add_paragraph()
     p_s5.paragraph_format.space_before = Pt(8)
     p_s5.paragraph_format.space_after = Pt(6)
-    r_s5 = p_s5.add_run("5. Suggestions for Improving the Cipher's Security")
+    r_s5 = p_s5.add_run("6. Suggestions for Improving the Cipher's Security")
     r_s5.font.name = 'Times New Roman'
     r_s5.font.size = Pt(14)
     r_s5.bold = True
@@ -691,7 +727,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s6 = doc.add_paragraph()
     p_s6.paragraph_format.space_before = Pt(8)
     p_s6.paragraph_format.space_after = Pt(6)
-    r_s6 = p_s6.add_run("6. Code Submission & Execution Details")
+    r_s6 = p_s6.add_run("7. Code Submission & Execution Details")
     r_s6.font.name = 'Times New Roman'
     r_s6.font.size = Pt(14)
     r_s6.bold = True
@@ -717,7 +753,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s7 = doc.add_paragraph()
     p_s7.paragraph_format.space_before = Pt(8)
     p_s7.paragraph_format.space_after = Pt(6)
-    r_s7 = p_s7.add_run("7. Academic References")
+    r_s7 = p_s7.add_run("8. Academic References")
     r_s7.font.name = 'Times New Roman'
     r_s7.font.size = Pt(14)
     r_s7.bold = True

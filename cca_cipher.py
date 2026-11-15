@@ -284,14 +284,6 @@ class AlKindiCompositeCipher:
         return recovered_pt, trace
 
 
-# Backward compatibility aliases
-OrbitalDynamicDiffusion = AlternatingDynamicDiffusion
-InqilabGurdishDiffusion = AlternatingDynamicDiffusion
-TeamDesignedDiffusion = AlternatingDynamicDiffusion
-AlKindiSeTahaCipher = AlKindiCompositeCipher
-ChimeraCompositeCipher = AlKindiCompositeCipher
-
-
 if __name__ == "__main__":
     cipher = AlKindiCompositeCipher()
     test_msg = "DEFEND THE PERIMETER AT ONCE"
