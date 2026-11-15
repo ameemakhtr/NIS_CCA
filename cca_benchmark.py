@@ -4,10 +4,16 @@ Run: python cca_benchmark.py   (timings vary by machine; IoC values are exact)
 """
 
 import random
+from collections import Counter
 import time
 from cca_cipher import AlKindiCompositeCipher, PlayfairCipher, VigenereCipher, clean_text
 from cca_challenge import CHALLENGE_PLAINTEXTS, generate_challenge_dataset
-from cca_attack import calculate_ic, RedTeamCryptanalysis
+
+
+def calculate_ic(text):
+    counts = Counter(clean_text(text))
+    n = sum(counts.values())
+    return sum(f * (f - 1) for f in counts.values()) / (n * (n - 1)) if n > 1 else 0.0
 
 
 def caesar(text, k=3):
@@ -48,8 +54,3 @@ if __name__ == "__main__":
         c, p, v = best_ms(caesar, text), best_ms(pf.encrypt, text), best_ms(vg.encrypt, text)
         print(f"  {n:<7} {e:8.3f}  {d:8.3f}  {c:6.3f}  {p:8.3f}  {v:8.3f}  {len(ct) / (e / 1000):,.0f}")
 
-    pairs = generate_challenge_dataset()["pairs"]
-    t = time.perf_counter()
-    keys = RedTeamCryptanalysis(pairs).recover_keys_and_sequence()
-    print(f"\nKey-free attack: recovered {keys['tier1_recovered_key']} / {keys['tier2_recovered_key']} "
-          f"in {time.perf_counter() - t:.1f} s ({keys['annealing_restarts']} annealing runs)")

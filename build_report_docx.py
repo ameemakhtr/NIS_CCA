@@ -10,8 +10,8 @@ Matches the exact academic style, structure, and density of NIS_CCP:
   - Submitted to: Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)
   - No redundant cover lines, no TOC page, no rubric self-grading table
   - Distinct bullet and numbered items on separate lines with proper indentation
-  - 10 Deliverables fully documented across Blue Team & Red Team
-  - Mathematical formulations, Callout boxes, 5x5 Matrix, Challenge Dataset, Error Proofs, Benchmarks
+  - Blue Team Deliverables 1–5 (our assigned role)
+  - Mathematical formulations, Callout boxes, 5x5 Matrix, Challenge Dataset, Benchmarks
 """
 
 import os
@@ -276,10 +276,10 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
         "Complex Computing Activity (CCA) Formulation: In accordance with the PEC / Washington Accord graduate attributes for engineering computing (CLO3: Design of Security Mechanisms), a Complex Computing Activity requires formulating, implementing, and cryptanalyzing multi-layered cryptographic primitives. Such problems demand strict adherence to Kerckhoffs's Principle and Shannon's informational criteria of Confusion and Diffusion, while guaranteeing linear computational efficiency and provable resilience against statistical cryptanalysis."
     )
     doc.add_paragraph(
-        "Project Focus: This project addresses the CT-486 Classical Cipher Challenge by designing and cryptanalyzing the Al-Kindi Tri-Tiered Composite Cipher (KTCC), named in tribute to Abu Yusuf Al-Kindi (801–873 CE), the pioneer of frequency cryptanalysis. KTCC cascades three mathematically complementary transformation layers: (1) a 5x5 Keyed Playfair digraphic substitution matrix, (2) a polyalphabetic Vigenère stream substitution, and (3) a team-designed Alternating Digraph Inversion with Positional Dynamic Drift (ADI-PDD)."
+        "Project Focus: This project addresses the CT-486 Classical Cipher Challenge by designing the Al-Kindi Tri-Tiered Composite Cipher (KTCC), named in tribute to Abu Yusuf Al-Kindi (801–873 CE), the pioneer of frequency cryptanalysis. KTCC cascades three mathematically complementary transformation layers: (1) a 5x5 Keyed Playfair digraphic substitution matrix, (2) a polyalphabetic Vigenère stream substitution, and (3) a team-designed Alternating Digraph Inversion with Positional Dynamic Drift (ADI-PDD)."
     )
     doc.add_paragraph(
-        "Dual-Team Implementation & Verification: Under the challenge framework, the Blue Team synthesized the cipher architecture alongside a standardized corpus of 10 challenge plaintext-ciphertext pairs (7 mathematically valid, 3 poisoned with intentional cryptographic flaws). The Red Team developed an automated cryptanalytic engine that performed statistical Index of Coincidence profiling, simulated annealing over Playfair matrices scored by cross-pair keystream agreement, and exact decomposition of the remaining keystream, using only the public pairs and no keys. The attack engine isolated the 3 corrupted pairs with data-derived evidence, recovered the secret keys (LABYRINTH, VALIANT, δ=3, θ=7), and every genuine pair round-trips exactly with the recovered keys. The data fixes the Vigenère key and θ only up to a shared offset; θ=7 is the split that makes the key an English word."
+        "Blue Team Role: Our group was assigned the Blue Team role. We designed the cipher and a corpus of 10 challenge plaintext-ciphertext pairs (7 genuine, 3 intentionally incorrect) that was handed to the Red Team group without the keys, algorithm or incorrect pairs. Breaking the cipher is the Red Team's task and is not part of this submission. Every genuine pair round-trips exactly with the keys in Deliverable 3, and the test suite checks this."
     )
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
@@ -443,197 +443,19 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
     # =========================================================
-    # SECTION 3: RED TEAM CRYPTANALYSIS & PROOFS
-    # =========================================================
-    p_s3 = doc.add_paragraph()
-    p_s3.paragraph_format.space_before = Pt(8)
-    p_s3.paragraph_format.space_after = Pt(6)
-    r_s3 = p_s3.add_run("3. Red Team Deliverables: Cryptanalysis & Mathematical Proofs")
-    r_s3.font.name = 'Times New Roman'
-    r_s3.font.size = Pt(14)
-    r_s3.bold = True
-    r_s3.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
-
-    doc.add_paragraph(
-        "Deliverable 6 – Statistical Profiling & Technique Identification: All findings are computed by cca_attack.py from the public pairs only. (1) Even Length Parity: every ciphertext length equals the Playfair-prepared plaintext length (J→I, X filler, Z pad) in 10/10 pairs, versus the raw plaintext length in only 3/10, pointing to a Playfair-family digraphic layer; (2) Index of Coincidence: corpus IoC = 0.0388, close to the random baseline 0.0385, indicating a polyalphabetic layer; (3) Shared Positional Keystream: under the recovered Playfair matrix, all genuine pairs imply the same shift at every position (355/362 positions agree), so Tiers 2 and 3 act as one fixed position-dependent keystream, which decomposes exactly into a period-7 Vigenère key, a linear drift with δ = 3, and a swap on even digraph blocks."
-    )
-
-    # IoC Table
-    ioc_data = [
-        ("Cipher Scheme / Corpus", "Index of Coincidence (IoC)", "Cryptanalytic Deduction"),
-        ("Challenge Plaintexts (English)", "0.0688", "Highly biased; trivial frequency attack."),
-        ("Caesar (k=3)", "0.0688", "Identical to plaintext: a shift only relabels letters."),
-        ("Playfair only (LABYRINTH)", "0.0551", "Partially flattened; retains digram bias."),
-        ("Uniform Random Baseline", "0.0385", "Maximum theoretical entropy."),
-        ("KTCC Challenge Ciphertext", "0.0388", "Near random; indicates a polyalphabetic layer.")
-    ]
-    t_ic = doc.add_table(rows=len(ioc_data), cols=3)
-    t_ic.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(ioc_data):
-        row = t_ic.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(8.5)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            elif r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
-
-    doc.add_paragraph().paragraph_format.space_after = Pt(4)
-
-    # Deliverable 7: Mathematical Error Proofs Table
-    doc.add_paragraph("Deliverable 7 – Rigorous Identification & Proofs of Corrupted Pairs:")
-    prf_data = [
-        ("Pair #", "Flaw Category", "Location", "Observed vs. Expected", "Mathematical Proof of Inconsistency"),
-        (
-            "3",
-            "Single-Letter Substitution",
-            "Index 5 (Block 2, Char 1)",
-            "Observed: 'N'\nExpected: 'J'\nDelta: +4 mod 26",
-            "Only index 5 disagrees with the keystream shared by every other pair; all other positions agree. Re-encrypting the plaintext with the recovered keys predicts 'J'; observed 'N' is +4 mod 26 away."
-        ),
-        (
-            "6",
-            "Parity Transposition Error",
-            "Indices 2 & 3 (Block 1, Odd)",
-            "Observed: 'SZ'\nExpected: 'ZS'\nDelta: Reversed",
-            "Only indices 2 and 3 disagree with the shared keystream, and observed 'SZ' is exactly predicted 'ZS' reversed: two letters were transposed in block 1, which the cipher never swaps (only even blocks are swapped)."
-        ),
-        (
-            "9",
-            "Tail Desynchronization",
-            "Indices 32–35 (Terminal 4 chars)",
-            "Observed: 'CALF'\nExpected: 'RPAU'\nDelta: +11 mod 26",
-            "Positions 0–31 agree with the shared keystream; the last four (32–35) all differ by the same +11 mod 26, so the tail was shifted after encryption."
-        )
-    ]
-    t_pf = doc.add_table(rows=len(prf_data), cols=5)
-    t_pf.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(prf_data):
-        row = t_pf.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(8.0)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            elif r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            if c_idx == 0 and r_idx > 0:
-                r.bold = True
-                r.font.color.rgb = RGBColor(0xB9, 0x1C, 0x1C)
-            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
-
-    doc.add_paragraph().paragraph_format.space_after = Pt(4)
-
-    # Deliverable 8: Key Recovery Table
-    doc.add_paragraph("Deliverable 8 – Key Recovery & Layer Decoupling:")
-    rc_data = [
-        ("Cipher Layer", "Target Parameter", "Recovered Value", "Cryptanalytic Method Applied"),
-        ("Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Simulated annealing over 5x5 matrices, scored by cross-pair keystream agreement (355/362)"),
-        ("Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "CT length = J→I / X / Z prepared PT length in 10/10 pairs"),
-        ("Tier 2 (Polyalphabetic)", "Vigenère Keyword", "VALIANT (Length 7)", "Keystream minus drift is exactly periodic with period 7"),
-        ("Tier 3A (Transposition)", "Block Parity Inversion", "Swap on Even Blocks (b%2==0)", "Swapped orientation gives consensus only on even blocks"),
-        ("Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Exhaustive δ = 0..25: only δ = 3 leaves a period-7 residual"),
-        ("Tier 3B (Affine Drift)", "Seed Offset (θ)", "7", "Data fixes key + θ only; θ = 7 makes the key English (VALIANT)")
-    ]
-    t_rc = doc.add_table(rows=len(rc_data), cols=4)
-    t_rc.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(rc_data):
-        row = t_rc.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(8.5)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            elif r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
-
-    doc.add_paragraph().paragraph_format.space_after = Pt(4)
-
-    # Deliverable 9 & 10: Verification Table
-    doc.add_paragraph("Deliverable 9 & 10 – Verification Evidence & Round-Trip Plaintext Recovery:")
-    vr_data = [
-        ("#", "Challenge Ciphertext", "Plaintext (decrypts to prepared form)", "Status", "Fidelity"),
-        ("1", "MJEDKEZZENDOEKXNLBKMOGIT", "DEFEND THE PERIMETER AT ONCE", "VERIFIED VALID", "100.0%"),
-        ("2", "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF", "ZERO TRUST ARCHITECTURE SECURES DATA", "VERIFIED VALID", "100.0%"),
-        ("3", "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH", "[Rejected: Tampered at index 5]", "FLAGGED CORRUPT", "Rejected"),
-        ("4", "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR", "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY", "VERIFIED VALID", "100.0%"),
-        ("5", "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP", "QUANTUM COMPUTING THREATENS TRADITIONAL RSA", "VERIFIED VALID", "100.0%"),
-        ("6", "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY", "[Rejected: letters transposed at idx 2-3]", "FLAGGED CORRUPT", "Rejected"),
-        ("7", "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL", "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC", "VERIFIED VALID", "100.0%"),
-        ("8", "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ", "AUTHENTICATION TOKEN EXPIRES SOON REFRESH", "VERIFIED VALID", "100.0%"),
-        ("9", "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF", "[Rejected: +11 offset at idx 32-35]", "FLAGGED CORRUPT", "Rejected"),
-        ("10", "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY", "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD", "VERIFIED VALID", "100.0%")
-    ]
-    t_vr = doc.add_table(rows=len(vr_data), cols=5)
-    t_vr.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(vr_data):
-        row = t_vr.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(8.0)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-                p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-            elif r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            if c_idx == 3 and "CORRUPT" in val:
-                r.bold = True
-                r.font.color.rgb = RGBColor(0xB9, 0x1C, 0x1C)
-            elif c_idx == 3 and "VALID" in val:
-                r.bold = True
-                r.font.color.rgb = RGBColor(0x15, 0x80, 0x3D)
-            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
-
-    doc.add_paragraph().paragraph_format.space_after = Pt(4)
-
-    # =========================================================
     # SECTION 4: BENCHMARKS & COMPLEXITY
     # =========================================================
     p_s4 = doc.add_paragraph()
     p_s4.paragraph_format.space_before = Pt(8)
     p_s4.paragraph_format.space_after = Pt(6)
-    r_s4 = p_s4.add_run("4. Performance Metrics and Empirical Complexity")
+    r_s4 = p_s4.add_run("3. Performance Metrics and Empirical Complexity")
     r_s4.font.name = 'Times New Roman'
     r_s4.font.size = Pt(14)
     r_s4.bold = True
     r_s4.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
 
     doc.add_paragraph(
-        "Measured with cca_benchmark.py (best of 50 runs on one development machine; absolute times vary by hardware) for payload sizes from N = 100 to 10,000 characters:"
+        "Measured with cca_benchmark.py (best of 50 runs on one development machine; absolute times vary by hardware) for payload sizes from N = 100 to 10,000 characters. The challenge ciphertexts have an Index of Coincidence of 0.0388, against 0.0385 for uniform random text and 0.0688 for the plaintexts (also from cca_benchmark.py)."
     )
 
     bn_data = [
@@ -674,14 +496,14 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s5m = doc.add_paragraph()
     p_s5m.paragraph_format.space_before = Pt(8)
     p_s5m.paragraph_format.space_after = Pt(6)
-    r_s5m = p_s5m.add_run("5. CCA Attribute Mapping & Resources")
+    r_s5m = p_s5m.add_run("4. CCA Attribute Mapping & Resources")
     r_s5m.font.name = 'Times New Roman'
     r_s5m.font.size = Pt(14)
     r_s5m.bold = True
     r_s5m.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
 
     doc.add_paragraph('How the CCA attributes named in the activity brief appear in this submission:')
-    cca_data = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, length-parity test, simulated annealing, exhaustive δ and period search); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_attack.py, cca_benchmark.py, test_cca.py (8 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Blue Team: team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift. Red Team: a key-free fitness function (agreement of the implied keystream across pairs) that both recovers the Playfair matrix and exposes the corrupted pairs.', 'Deliverables 1–3 (design); Deliverables 6–8 (attack)'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to an unfamiliar three-layer composite. Layer order and parameters were derived from the data rather than assumed, and the Vigenère key / θ equivalence was identified.", 'Deliverables 8–10; test_red_team_attack_is_key_free recovers keys it has never seen (MONARCHY, δ = 5)')]
+    cca_data = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_challenge.py, cca_benchmark.py, test_cca.py (6 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them.', 'Deliverables 1–4'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes.", 'Deliverable 5; Benchmarks; Suggestions')]
     t_cca = doc.add_table(rows=len(cca_data), cols=3)
     t_cca.alignment = WD_TABLE_ALIGNMENT.CENTER
     for r_idx, row_vals in enumerate(cca_data):
@@ -710,12 +532,13 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s5 = doc.add_paragraph()
     p_s5.paragraph_format.space_before = Pt(8)
     p_s5.paragraph_format.space_after = Pt(6)
-    r_s5 = p_s5.add_run("6. Suggestions for Improving the Cipher's Security")
+    r_s5 = p_s5.add_run("5. Suggestions for Improving the Cipher's Security")
     r_s5.font.name = 'Times New Roman'
     r_s5.font.size = Pt(14)
     r_s5.bold = True
     r_s5.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
 
+    doc.add_paragraph('Known limitation: Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 remove this.')
     add_num_item(doc, "1.", "Dynamic Autokey Keystream Scheduling:", "Replace the periodic repeating Vigenère key with an autokey mechanism (K[i] = P[i - L_V]) to eliminate keystream periodicity and defeat Kasiski autocorrelation.")
     add_num_item(doc, "2.", "Non-Linear S-Box Permutation:", "Insert an 8-bit non-linear substitution box between Tier 2 and Tier 3 to break linear modular arithmetic over Z_26, preventing modular equation solvers from decoupling the stages.")
     add_num_item(doc, "3.", "Cipher Block Chaining (CBC) Feedback:", "Modularly add previous ciphertext digraphs into current plaintext digraphs (P'[b] = (P[b] + C[b-1]) mod 26) to eliminate identical ciphertext outputs for repeating phrases.")
@@ -727,22 +550,21 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s6 = doc.add_paragraph()
     p_s6.paragraph_format.space_before = Pt(8)
     p_s6.paragraph_format.space_after = Pt(6)
-    r_s6 = p_s6.add_run("7. Code Submission & Execution Details")
+    r_s6 = p_s6.add_run("6. Code Submission & Execution Details")
     r_s6.font.name = 'Times New Roman'
     r_s6.font.size = Pt(14)
     r_s6.bold = True
     r_s6.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
 
     doc.add_paragraph(
-        "All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at: https://github.com/ameemakhtr/NIS_CCA"
+        "All project source files and automated test suites are publicly hosted on GitHub at: https://github.com/ameemakhtr/NIS_CCA"
     )
     doc.add_paragraph().paragraph_format.space_after = Pt(4)
 
     add_callout_box(doc, [
         "# Automated Execution & Verification Commands",
-        "python cca_main.py --all          # Run full Blue Team + Red Team demonstration",
-        "python cca_main.py --red          # Run automated Red Team cryptanalysis solver",
-        "python test_cca.py                # Run automated unit test suite (8/8 tests passing)",
+        "python cca_main.py --blue         # Show cipher design and challenge dataset",
+        "python test_cca.py                # Run automated unit test suite (6/6 tests passing)",
         "python build_report_pdf.py        # Recompile publication-grade PDF report",
         "python build_report_docx.py       # Recompile publication-grade Word DOCX report"
     ])
@@ -753,7 +575,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s7 = doc.add_paragraph()
     p_s7.paragraph_format.space_before = Pt(8)
     p_s7.paragraph_format.space_after = Pt(6)
-    r_s7 = p_s7.add_run("8. Academic References")
+    r_s7 = p_s7.add_run("7. Academic References")
     r_s7.font.name = 'Times New Roman'
     r_s7.font.size = Pt(14)
     r_s7.bold = True

@@ -11,7 +11,7 @@ Matches the exact academic style, structure, and density of NIS_CCP:
   - No redundant cover lines, no duplicate reports, no TOC page, no rubric self-grading table
   - All table cells wrapped in Paragraphs with auto-wrapping, zero text overlap
   - Distinct bullet and numbered items on separate lines with proper indentation
-  - 10 Deliverables fully documented across Blue Team & Red Team
+  - Blue Team Deliverables 1–5 (our assigned role)
 """
 
 import os
@@ -301,11 +301,11 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         body_style
     ))
     story.append(Paragraph(
-        "<b>Project Focus:</b> This project addresses the <b>CT-486 Classical Cipher Challenge</b> by designing and cryptanalyzing the <b>Al-Kindi Tri-Tiered Composite Cipher (KTCC)</b>, named in tribute to Abu Yusuf Al-Kindi (801–873 CE), the pioneer of frequency cryptanalysis. KTCC cascades three mathematically complementary transformation layers: (1) a 5x5 Keyed Playfair digraphic substitution matrix, (2) a polyalphabetic Vigenère stream substitution, and (3) a team-designed Alternating Digraph Inversion with Positional Dynamic Drift (ADI-PDD).",
+        "<b>Project Focus:</b> This project addresses the <b>CT-486 Classical Cipher Challenge</b> by designing the <b>Al-Kindi Tri-Tiered Composite Cipher (KTCC)</b>, named in tribute to Abu Yusuf Al-Kindi (801–873 CE), the pioneer of frequency cryptanalysis. KTCC cascades three mathematically complementary transformation layers: (1) a 5x5 Keyed Playfair digraphic substitution matrix, (2) a polyalphabetic Vigenère stream substitution, and (3) a team-designed Alternating Digraph Inversion with Positional Dynamic Drift (ADI-PDD).",
         body_style
     ))
     story.append(Paragraph(
-        "<b>Dual-Team Implementation & Verification:</b> Under the challenge framework, the Blue Team synthesized the cipher architecture alongside a standardized corpus of 10 challenge plaintext-ciphertext pairs (7 mathematically valid, 3 poisoned with intentional cryptographic flaws). The Red Team developed an automated cryptanalytic engine that performed statistical Index of Coincidence profiling, simulated annealing over Playfair matrices scored by cross-pair keystream agreement, and exact decomposition of the remaining keystream, using only the public pairs and no keys. The attack engine isolated the 3 corrupted pairs with data-derived evidence, recovered the secret keys (<code>LABYRINTH</code>, <code>VALIANT</code>, &delta;=3, &theta;=7), and every genuine pair round-trips exactly with the recovered keys. The data fixes the Vigenère key and θ only up to a shared offset; θ=7 is the split that makes the key an English word.",
+        "<b>Blue Team Role:</b> Our group was assigned the Blue Team role. We designed the cipher and a corpus of 10 challenge plaintext-ciphertext pairs (7 genuine, 3 intentionally incorrect) that was handed to the Red Team group without the keys, algorithm or incorrect pairs. Breaking the cipher is the Red Team's task and is not part of this submission. Every genuine pair round-trips exactly with the keys in Deliverable 3, and the test suite checks this.",
         body_style
     ))
     story.append(Spacer(1, 6))
@@ -532,194 +532,11 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(PageBreak())
 
     # =========================================================
-    # SECTION 3: RED TEAM CRYPTANALYSIS & PROOFS
-    # =========================================================
-    story.append(Paragraph("3. Red Team Deliverables: Cryptanalysis & Mathematical Proofs", section_heading))
-    story.append(Paragraph(
-        "<b>Deliverable 6 – Statistical Profiling & Technique Identification:</b> All findings are computed by cca_attack.py from the public pairs only. (1) <i>Even Length Parity:</i> every ciphertext length equals the Playfair-prepared plaintext length (J→I, X filler, Z pad) in 10/10 pairs, versus the raw plaintext length in only 3/10, pointing to a Playfair-family digraphic layer; (2) <i>Index of Coincidence:</i> corpus IoC = 0.0388, close to the random baseline 0.0385, indicating a polyalphabetic layer; (3) <i>Shared Positional Keystream:</i> under the recovered Playfair matrix, all genuine pairs imply the same shift at every position (355/362 positions agree), so Tiers 2 and 3 act as one fixed position-dependent keystream, which decomposes exactly into a period-7 Vigenère key, a linear drift with δ = 3, and a swap on even digraph blocks.",
-        body_style
-    ))
-
-    # IoC Table (Wrapped)
-    ioc_raw = [
-        ["Cipher Scheme / Corpus", "Index of Coincidence (IoC)", "Cryptanalytic Deduction"],
-        ["Challenge Plaintexts (English)", "0.0688", "Highly biased; trivial frequency attack."],
-        ["Caesar (k=3)", "0.0688", "Identical to plaintext: a shift only relabels letters."],
-        ["Playfair only (LABYRINTH)", "0.0551", "Partially flattened; retains digram bias."],
-        ["Uniform Random Baseline", "0.0385", "Maximum theoretical entropy."],
-        ["KTCC Challenge Ciphertext", "0.0388", "Near random; indicates a polyalphabetic layer."]
-    ]
-    ioc_data = []
-    for r_idx, row in enumerate(ioc_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 1:
-                p_row.append(Paragraph(val, td_center))
-            elif r_idx == 5:
-                p_row.append(Paragraph(f"<b>{val}</b>", td_bold if c_idx == 0 else td_style))
-            else:
-                p_row.append(Paragraph(val, td_style))
-        ioc_data.append(p_row)
-
-    t_ioct = Table(ioc_data, colWidths=[2.0*inch, 1.8*inch, 3.1*inch])
-    t_ioct.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ('TOPPADDING', (0, 0), (-1, -1), 2),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_ioct)
-    story.append(Spacer(1, 5))
-
-    # Deliverable 7: Mathematical Error Proofs Table (Paragraph Wrapped!)
-    story.append(Paragraph("<b>Deliverable 7 – Rigorous Identification & Proofs of Corrupted Pairs:</b>", sub_heading))
-    proofs_raw = [
-        ["Pair #", "Flaw Category", "Location", "Observed vs. Expected", "Mathematical Proof of Inconsistency"],
-        [
-            "3",
-            "Single-Letter Substitution",
-            "Index 5 (Block 2, Char 1)",
-            "Observed: 'N'<br/>Expected: 'J'<br/>Delta: +4 mod 26",
-            "Only index 5 disagrees with the keystream shared by every other pair; all other positions agree. Re-encrypting the plaintext with the recovered keys predicts 'J'; observed 'N' is +4 mod 26 away."
-        ],
-        [
-            "6",
-            "Parity Transposition Error",
-            "Indices 2 & 3 (Block 1, Odd)",
-            "Observed: 'SZ'<br/>Expected: 'ZS'<br/>Delta: Reversed",
-            "Only indices 2 and 3 disagree with the shared keystream, and observed 'SZ' is exactly predicted 'ZS' reversed: two letters were transposed in block 1, which the cipher never swaps (only even blocks are swapped)."
-        ],
-        [
-            "9",
-            "Tail Desynchronization",
-            "Indices 32–35 (Terminal 4 chars)",
-            "Observed: 'CALF'<br/>Expected: 'RPAU'<br/>Delta: +11 mod 26",
-            "Positions 0–31 agree with the shared keystream; the last four (32–35) all differ by the same +11 mod 26, so the tail was shifted after encryption."
-        ]
-    ]
-    proofs_data = []
-    for r_idx, row in enumerate(proofs_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 0:
-                p_row.append(Paragraph(val, td_danger))
-            else:
-                p_row.append(Paragraph(val, td_style))
-        proofs_data.append(p_row)
-
-    t_proof = Table(proofs_data, colWidths=[0.5*inch, 1.4*inch, 1.3*inch, 1.4*inch, 2.3*inch])
-    t_proof.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_proof)
-    story.append(Spacer(1, 5))
-
-    # Deliverable 8: Key Recovery Table (Wrapped)
-    story.append(Paragraph("<b>Deliverable 8 – Key Recovery & Layer Decoupling:</b>", sub_heading))
-    rec_raw = [
-        ["Cipher Layer", "Target Parameter", "Recovered Value", "Cryptanalytic Method Applied"],
-        ["Tier 1 (Polygraphic)", "5x5 Playfair Keyword", "LABYRINTH", "Simulated annealing over 5x5 matrices, scored by cross-pair keystream agreement (355/362)"],
-        ["Tier 1 (Alphabet)", "Matrix Alphabet Grid", "25 letters (I/J combined)", "CT length = J→I / X / Z prepared PT length in 10/10 pairs"],
-        ["Tier 2 (Polyalphabetic)", "Vigenère Keyword", "VALIANT (Length 7)", "Keystream minus drift is exactly periodic with period 7"],
-        ["Tier 3A (Transposition)", "Block Parity Inversion", "Swap on Even Blocks (b%2==0)", "Swapped orientation gives consensus only on even blocks"],
-        ["Tier 3B (Affine Drift)", "Slope Multiplier (δ)", "3", "Exhaustive δ = 0..25: only δ = 3 leaves a period-7 residual"],
-        ["Tier 3B (Affine Drift)", "Seed Offset (θ)", "7", "Data fixes key + θ only; θ = 7 makes the key English (VALIANT)"]
-    ]
-    rec_data = []
-    for r_idx, row in enumerate(rec_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 0:
-                p_row.append(Paragraph(val, td_bold))
-            elif c_idx == 2:
-                p_row.append(Paragraph(val, td_code))
-            else:
-                p_row.append(Paragraph(val, td_style))
-        rec_data.append(p_row)
-
-    t_rec = Table(rec_data, colWidths=[1.6*inch, 1.8*inch, 1.7*inch, 1.8*inch])
-    t_rec.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ('TOPPADDING', (0, 0), (-1, -1), 2),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_rec)
-    story.append(PageBreak())
-
-    # Deliverable 9 & 10: Verification Table (Wrapped & Spaced Ciphertexts)
-    story.append(Paragraph("<b>Deliverable 9 & 10 – Verification Evidence & Round-Trip Plaintext Recovery:</b>", sub_heading))
-    verif_raw = [
-        ["#", "Challenge Ciphertext", "Plaintext (decrypts to prepared form)", "Status", "Fidelity"],
-        ["1", "MJEDKEZZENDOEKXNLBKMOGIT", "DEFEND THE PERIMETER AT ONCE", "VERIFIED VALID", "100.0%"],
-        ["2", "RAYQHYRJRVVYXJFFSZIKYVFWMLERYPRF", "ZERO TRUST ARCHITECTURE SECURES DATA", "VERIFIED VALID", "100.0%"],
-        ["3", "JPZOVNCVEJVBCASSAEWRNMGWMUUNSPRJTKDH", "[Rejected: Tampered at index 5]", "FLAGGED CORRUPT", "Rejected"],
-        ["4", "ASGLLALEAIFEOCGKQEUNOZZHGWGGHBSHPOZQWRQR", "INCIDENT RESPONSE TEAM ENGAGED IMMEDIATELY", "VERIFIED VALID", "100.0%"],
-        ["5", "ERLCCEKFEXFKXOZENYJJXMJNDBFEQXLRQXZDVQQP", "QUANTUM COMPUTING THREATENS TRADITIONAL RSA", "VERIFIED VALID", "100.0%"],
-        ["6", "STSZRXYSLOWHSIDBYYQDUZXXIZHXAZPQTPYPMY", "[Rejected: letters transposed at idx 2-3]", "FLAGGED CORRUPT", "Rejected"],
-        ["7", "AIYIHRQROITACREZSKUYMAANPQZENDJGNNEZPRJL", "FIREWALL BLOCKS UNTRUSTED NETWORK TRAFFIC", "VERIFIED VALID", "100.0%"],
-        ["8", "CQFAKKZKHVABOCFPQUNNAHXUPWGSRGEONMIRTQ", "AUTHENTICATION TOKEN EXPIRES SOON REFRESH", "VERIFIED VALID", "100.0%"],
-        ["9", "MJRLGXHBAWTNSUGNHYWACVYKWCGHPKQZCALF", "[Rejected: +11 offset at idx 32-35]", "FLAGGED CORRUPT", "Rejected"],
-        ["10", "HIGBLSFFPQTNOMZDSEKZMXZQONTOBVRFQKZOQY", "ELLIPTIC CURVE DIGITAL SIGNATURE STANDARD", "VERIFIED VALID", "100.0%"]
-    ]
-    verif_data = []
-    for r_idx, row in enumerate(verif_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 0:
-                p_row.append(Paragraph(val, td_center))
-            elif c_idx == 1:
-                p_row.append(Paragraph(chunk_cipher(val, 4), td_code))
-            elif c_idx == 2:
-                p_row.append(Paragraph(val, td_style))
-            elif c_idx == 3:
-                if "FLAGGED" in val:
-                    p_row.append(Paragraph(val, td_danger))
-                else:
-                    p_row.append(Paragraph(val, td_success))
-            elif c_idx == 4:
-                p_row.append(Paragraph(val, td_center))
-        verif_data.append(p_row)
-
-    t_ver = Table(verif_data, colWidths=[0.35*inch, 2.45*inch, 2.35*inch, 1.05*inch, 0.7*inch])
-    t_ver.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2),
-        ('TOPPADDING', (0, 0), (-1, -1), 2),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_ver)
-    story.append(Spacer(1, 5))
-
-    # =========================================================
     # SECTION 4: BENCHMARKS & COMPLEXITY
     # =========================================================
-    story.append(Paragraph("4. Performance Metrics and Empirical Complexity", section_heading))
+    story.append(Paragraph("3. Performance Metrics and Empirical Complexity", section_heading))
     story.append(Paragraph(
-        "Measured with cca_benchmark.py (best of 50 runs on one development machine; absolute times vary by hardware) for payload sizes from <i>N</i> = 100 to 10,000 characters:",
+        "Measured with cca_benchmark.py (best of 50 runs on one development machine; absolute times vary by hardware) for payload sizes from <i>N</i> = 100 to 10,000 characters. The challenge ciphertexts have an Index of Coincidence of 0.0388, against 0.0385 for uniform random text and 0.0688 for the plaintexts (also from cca_benchmark.py).",
         body_style
     ))
 
@@ -761,9 +578,9 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 5: CCA ATTRIBUTE MAPPING (no self-grading)
     # =========================================================
-    story.append(Paragraph("5. CCA Attribute Mapping & Resources", section_heading))
+    story.append(Paragraph("4. CCA Attribute Mapping & Resources", section_heading))
     story.append(Paragraph('How the CCA attributes named in the activity brief appear in this submission:', body_style))
-    cca_raw = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, length-parity test, simulated annealing, exhaustive δ and period search); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_attack.py, cca_benchmark.py, test_cca.py (8 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Blue Team: team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift. Red Team: a key-free fitness function (agreement of the implied keystream across pairs) that both recovers the Playfair matrix and exposes the corrupted pairs.', 'Deliverables 1–3 (design); Deliverables 6–8 (attack)'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to an unfamiliar three-layer composite. Layer order and parameters were derived from the data rather than assumed, and the Vigenère key / θ equivalence was identified.", 'Deliverables 8–10; test_red_team_attack_is_key_free recovers keys it has never seen (MONARCHY, δ = 5)')]
+    cca_raw = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_challenge.py, cca_benchmark.py, test_cca.py (6 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them.', 'Deliverables 1–4'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes.", 'Deliverable 5; Benchmarks; Suggestions')]
     cca_data = []
     for r_idx, row in enumerate(cca_raw):
         p_row = []
@@ -791,9 +608,9 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 6: SUGGESTIONS FOR IMPROVEMENT
     # =========================================================
-    story.append(Paragraph("6. Suggestions for Improving the Cipher's Security", section_heading))
+    story.append(Paragraph("5. Suggestions for Improving the Cipher's Security", section_heading))
     story.append(Paragraph(
-        "To elevate KTCC resilience against advanced known-plaintext algebraic attacks without increasing asymptotic complexity:",
+        "<b>Known limitation:</b> Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 remove this. To raise KTCC resilience without increasing asymptotic complexity:",
         body_style
     ))
 
@@ -803,7 +620,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         numbered_style
     ))
     story.append(Paragraph(
-        "<b>2. Non-Linear S-Box Permutation:</b> Insert an 8-bit non-linear substitution box between Tier 2 and Tier 3 to break linear modular arithmetic over &Zopf;<sub>26</sub>, preventing modular equation solvers from decoupling the stages.",
+        "<b>2. Non-Linear S-Box Permutation:</b> Insert an 8-bit non-linear substitution box between Tier 2 and Tier 3 to break linear modular arithmetic over <i>Z</i><sub>26</sub>, preventing modular equation solvers from decoupling the stages.",
         numbered_style
     ))
     story.append(Paragraph(
@@ -819,9 +636,9 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 6: CODE SUBMISSION & EXECUTION DETAILS
     # =========================================================
-    story.append(Paragraph("7. Code Submission & Execution Details", section_heading))
+    story.append(Paragraph("6. Code Submission & Execution Details", section_heading))
     story.append(Paragraph(
-        "All project source files, automated test suites, and cryptanalysis solvers are publicly hosted on GitHub at: <b><u>https://github.com/ameemakhtr/NIS_CCA</u></b>",
+        "All project source files and automated test suites are publicly hosted on GitHub at: <b><u>https://github.com/ameemakhtr/NIS_CCA</u></b>",
         body_style
     ))
     story.append(Spacer(1, 4))
@@ -829,9 +646,8 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # Execution Commands Box
     cmd_lines = (
         "<b># Automated Execution & Verification Commands</b><br/>"
-        "python cca_main.py --all &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run full Blue Team + Red Team demonstration<br/>"
-        "python cca_main.py --red &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated Red Team cryptanalysis solver<br/>"
-        "python test_cca.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated unit test suite (8/8 tests passing)<br/>"
+        "python cca_main.py --blue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show cipher design and challenge dataset<br/>"
+        "python test_cca.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated unit test suite (6/6 tests passing)<br/>"
         "python build_report_pdf.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade PDF report<br/>"
         "python build_report_docx.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade Word DOCX report"
     )
@@ -848,7 +664,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 7: REFERENCES
     # =========================================================
-    story.append(Paragraph("8. Academic References", section_heading))
+    story.append(Paragraph("7. Academic References", section_heading))
     refs = [
         "1. Al-Kindi, Abu Yusuf Ya'qub ibn Ishaq (c. 850 CE). <i>Risalah fi Istikhraj al-Mu'amma</i> (Manuscript on Deciphering Cryptographic Messages). House of Wisdom, Baghdad.",
         "2. Shannon, Claude E. (1949). 'Communication Theory of Secrecy Systems.' <i>Bell System Technical Journal</i>, 28(4), 656–715.",

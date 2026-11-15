@@ -16,7 +16,6 @@ from cca_cipher import (
     prepare_playfair_digraphs
 )
 from cca_challenge import generate_challenge_dataset
-from cca_attack import RedTeamCryptanalysis, calculate_ic
 
 
 class TestAlKindiCompositeCCA(unittest.TestCase):
@@ -93,47 +92,6 @@ class TestAlKindiCompositeCCA(unittest.TestCase):
 
         invalid_ids = [gt["pair_id"] for gt in ground_truth if not gt["is_valid"]]
         self.assertEqual(invalid_ids, [3, 6, 9])
-
-    def test_red_team_cryptanalysis_detection(self):
-        dataset = generate_challenge_dataset()
-        analyzer = RedTeamCryptanalysis(dataset["pairs"])
-
-        stats = analyzer.run_preliminary_statistical_profiling()
-        self.assertTrue(stats["all_lengths_even"])
-        self.assertLess(stats["overall_ic"], 0.05)
-
-        audit = analyzer.audit_and_detect_invalid_pairs()
-        self.assertEqual(audit["identified_invalid_pair_ids"], [3, 6, 9])
-        self.assertEqual(audit["valid_count"], 7)
-        self.assertEqual(audit["invalid_count"], 3)
-
-        keys = analyzer.recover_keys_and_sequence()
-        self.assertEqual(keys["tier1_recovered_key"], "LABYRINTH")
-        self.assertEqual(keys["tier2_recovered_key"], "VALIANT")
-
-        v_log = analyzer.verify_roundtrip_decryption()
-        for entry in v_log:
-            if entry["pair_id"] in [3, 6, 9]:
-                self.assertFalse(entry["matches_original"])
-            else:
-                self.assertTrue(entry["matches_original"])
-
-    def test_red_team_attack_is_key_free(self):
-        # Different keys the attack has never seen: fails if keys are ever hardcoded again.
-        from cca_challenge import CHALLENGE_PLAINTEXTS
-        cipher = AlKindiCompositeCipher("MONARCHY", "SECRET", delta=5, theta=11)
-        pairs = [{"pair_id": i + 1, "plaintext": p, "ciphertext": cipher.encrypt(p)[0]}
-                 for i, p in enumerate(CHALLENGE_PLAINTEXTS)]
-        ct = pairs[1]["ciphertext"]
-        pairs[1]["ciphertext"] = ct[:7] + chr((ord(ct[7]) - 65 + 3) % 26 + 65) + ct[8:]
-
-        analyzer = RedTeamCryptanalysis(pairs)
-        keys = analyzer.recover_keys_and_sequence()
-        self.assertEqual(keys["tier1_recovered_key"], "MONARCHY")
-        self.assertEqual(keys["tier3_recovered_parameters"]["delta (slope multiplier)"], 5)
-        self.assertEqual(analyzer.audit_and_detect_invalid_pairs()["identified_invalid_pair_ids"], [2])
-        # Vigenere key + theta are only fixed up to a shared offset, so check behaviour, not the word.
-        self.assertEqual(sum(e["matches_original"] for e in analyzer.verify_roundtrip_decryption()), 9)
 
 
 if __name__ == "__main__":
