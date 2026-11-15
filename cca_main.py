@@ -9,7 +9,7 @@ Target Cipher: Al-Kindi Tri-Tiered Composite Cipher (KTCC)
 
 Usage:
   python cca_main.py --blue          # Inspect Blue Team Cipher Design & Challenge Pairs
-  python cca_main.py --verify        # Run ground-truth mathematical verification
+  python cca_main.py --verify        # Run the automated unit test suite (test_cca.py)
   python cca_main.py --interactive   # Enter interactive encryption / cryptanalysis shell
 """
 
@@ -70,6 +70,9 @@ def interactive_mode():
                 print(f"   Decrypted PT  : {pt}")
             else:
                 print("   Unknown command. Use 'enc <text>', 'dec <text>', or 'quit'.")
+        except (EOFError, KeyboardInterrupt):
+            print()
+            break
         except Exception as e:
             print(f"   Error: {e}")
 

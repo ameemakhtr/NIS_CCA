@@ -7,6 +7,9 @@ NED University of Engineering & Technology, Karachi, Pakistan
 
 import unittest
 import json
+import os
+import subprocess
+import sys
 from cca_cipher import (
     AlKindiCompositeCipher,
     PlayfairCipher,
@@ -16,6 +19,10 @@ from cca_cipher import (
     prepare_playfair_digraphs
 )
 from cca_challenge import generate_challenge_dataset
+from cca_analysis import affine_structure_check, compute_flaw_rows
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+CORRUPTED = {3, 6, 9}
 
 
 class TestAlKindiCompositeCCA(unittest.TestCase):
@@ -92,6 +99,69 @@ class TestAlKindiCompositeCCA(unittest.TestCase):
 
         invalid_ids = [gt["pair_id"] for gt in ground_truth if not gt["is_valid"]]
         self.assertEqual(invalid_ids, [3, 6, 9])
+
+    # ---------- frozen dataset & post-challenge checks ----------
+
+    def _public_pairs(self):
+        with open(os.path.join(HERE, "challenge_dataset_public.json"), encoding="utf-8") as f:
+            return json.load(f)["pairs"]
+
+    def _prepared(self, text):
+        return "".join(a + b for a, b in prepare_playfair_digraphs(text))
+
+    def test_known_answer_pair_1(self):
+        self.assertEqual(self.cipher.encrypt("DEFEND THE PERIMETER AT ONCE")[0], "MJEDKEZZENDOEKXNLBKMOGIT")
+
+    def test_genuine_public_pairs_roundtrip(self):
+        for p in self._public_pairs():
+            if p["pair_id"] in CORRUPTED:
+                continue
+            self.assertEqual(self.cipher.encrypt(p["plaintext"])[0], p["ciphertext"], p["pair_id"])
+            self.assertEqual(self.cipher.decrypt(p["ciphertext"])[0], self._prepared(p["plaintext"]), p["pair_id"])
+
+    def test_corrupted_public_pairs_fail_both_ways(self):
+        for p in self._public_pairs():
+            if p["pair_id"] not in CORRUPTED:
+                continue
+            self.assertNotEqual(self.cipher.encrypt(p["plaintext"])[0], p["ciphertext"], p["pair_id"])
+            self.assertNotEqual(self.cipher.decrypt(p["ciphertext"])[0], self._prepared(p["plaintext"]), p["pair_id"])
+
+    def test_public_json_matches_generator(self):
+        generated = generate_challenge_dataset()["pairs"]
+        public = self._public_pairs()
+        self.assertEqual([(p["plaintext"], p["ciphertext"]) for p in public],
+                         [(p["plaintext"], p["ciphertext"]) for p in generated])
+
+    def test_committed_dataset_matches_generator(self):
+        with open(os.path.join(HERE, "challenge_dataset.json"), encoding="utf-8") as f:
+            committed = json.load(f)["pairs"]
+        self.assertEqual([p["ciphertext"] for p in committed],
+                         [p["ciphertext"] for p in generate_challenge_dataset()["pairs"]])
+
+    def test_public_json_leaks_no_secrets(self):
+        with open(os.path.join(HERE, "challenge_dataset_public.json"), encoding="utf-8") as f:
+            text = f.read().lower()
+        for word in ["labyrinth", "valiant", "ground_truth", "is_valid", "delta", "theta",
+                     "cleaned_prepared", "reason", "trace"]:
+            self.assertNotIn(word, text)
+
+    def test_tiers_2_3_are_affine(self):
+        self.assertTrue(affine_structure_check(50))
+
+    def test_flaw_damage_is_local(self):
+        for r in compute_flaw_rows():
+            if r["pair_id"] in CORRUPTED:
+                self.assertTrue(1 <= len(r["damaged_blocks"]) <= 2, r)
+            else:
+                self.assertEqual(r["damaged_blocks"], [], r)
+            self.assertTrue(r["length_preserved"], r)
+
+    def test_interactive_mode_exits_on_eof(self):
+        result = subprocess.run([sys.executable, "cca_main.py", "--interactive"], input="enc HELLO\n",
+                                capture_output=True, text=True, timeout=20, cwd=HERE)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("Final CT", result.stdout)
+        self.assertNotIn("EOF when reading a line", result.stdout)
 
 
 if __name__ == "__main__":

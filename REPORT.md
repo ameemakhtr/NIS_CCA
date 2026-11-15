@@ -27,7 +27,7 @@
 
 ---
 
-## Executive Summary & Architecture Overview
+## 1. Executive Summary & Architecture Overview
 
 This technical report documents the end-to-end design, implementation, and empirical verification for the **CT-486 Classical Cipher Challenge**. Our group was assigned the **Blue Team** role, so this submission covers Deliverables 1–5. Breaking the cipher (Deliverables 6–10) is the Red Team group's task.
 * **Blue Team (Deliverables 1–5):** Design of the **Al-Kindi Tri-Tiered Composite Cipher (KTCC)**, combining 5x5 Playfair digraphic substitution, polyalphabetic Vigenère substitution, and team-designed Alternating Digraph Inversion & Positional Dynamic Drift (ADI-PDD), alongside 10 challenge pairs (7 genuine, 3 corrupted).
@@ -50,7 +50,7 @@ flowchart LR
 
 > **Disclosure note:** The keys, full algorithm and the 3 corrupted pairs below are published as Blue Team Deliverable 5 (final explanation after the challenge). The Red Team challenge has concluded. For any new challenge, share only `challenge_dataset_public.json`.
 
-# PART I: BLUE TEAM DELIVERABLES (DELIVERABLES 1 – 5)
+# 2. Blue Team Deliverables (Deliverables 1 – 5)
 
 ## Deliverable 1: Unique Cipher Name and Comprehensive Description
 
@@ -220,11 +220,11 @@ Step-by-step cryptographic trace for **Pair #1** (`DEFEND THE PERIMETER AT ONCE`
 | **Tier 3B: Dynamic Drift** | `MJ ED KE ZZ EN DO EK XN LB KM OG IT` | Positional affine drift $\Delta(i) = (3i + 7) \pmod{26}$. |
 | **Final Ciphertext** | `MJEDKEZZENDOEKXNLBKMOGIT` | Transmitted challenge ciphertext (Length 24). |
 
-**Invertibility:** The drift, swap and Vigenère stages are bijections on $\mathbb{Z}_{26}^{N}$, and Playfair is a bijection on prepared digraphs, so decryption (Algorithm 2) returns the *prepared* plaintext $P'$. The preparation step (dropping spaces, J→I, X filler, Z pad) is lossy, so it does not return the raw $P$. All 7 genuine pairs round-trip exactly; the 3 incorrect pairs do not (`test_cca.py`, 6/6 tests pass).
+**Invertibility:** The drift, swap and Vigenère stages are bijections on $\mathbb{Z}_{26}^{N}$, and Playfair is a bijection on prepared digraphs, so decryption (Algorithm 2) returns the *prepared* plaintext $P'$. The preparation step (dropping spaces, J→I, X filler, Z pad) is lossy, so it does not return the raw $P$. All 7 genuine pairs round-trip exactly; the 3 incorrect pairs do not (`test_cca.py`, 15/15 tests pass).
 
 ---
 
-## 5. Performance Benchmarks and Complexity Analysis
+## 3. Performance Benchmarks and Complexity Analysis
 
 Measured with `cca_benchmark.py` (best of 50 runs on one development machine, Python 3.14). Absolute times vary by hardware, but the linear scaling does not. The challenge ciphertexts have an Index of Coincidence of 0.0388, against 0.0385 for uniform random text and 0.0688 for the plaintexts (also from `cca_benchmark.py`).
 
@@ -238,21 +238,112 @@ Measured with `cca_benchmark.py` (best of 50 runs on one development machine, Py
 
 ---
 
-## 6. CCA Attribute Mapping & Resources
+## 4. CCA Attribute Mapping & Resources
 
 How the CCA attributes named in the activity brief appear in this submission:
 
 | CCA Attribute | Application in This Activity | Evidence |
 | :--- | :--- | :--- |
-| **CCA-1: Range of Resources** | Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub. | cca_cipher.py, cca_challenge.py, cca_benchmark.py, test_cca.py (6 tests), challenge_dataset_public.json |
-| **CCA-3: Innovation** | Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them. | Deliverables 1–4 |
-| **CCA-5: Familiarity** | Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes. | Deliverable 5; Benchmarks; Suggestions |
+| **CCA-1: Range of Resources** | Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub. | cca_cipher.py, cca_challenge.py, cca_analysis.py, cca_benchmark.py, test_cca.py (15 tests), challenge_dataset_public.json |
+| **CCA-3: Innovation** | Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them. | Deliverables 1–4; Section 5 |
+| **CCA-5: Familiarity** | Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes. | Deliverable 5; Benchmarks; Resistance Analysis (Section 5); Suggestions |
 
 ---
 
+<!-- BEGIN GENERATED: report_inputs.py (do not edit by hand) -->
+
+## 5. Design Rationale and Resistance Analysis
+
+This section is part of the post-challenge explanation (Deliverable 5). Every number below is computed by cca_analysis.py with the real keys.
+
+### Stage-by-stage rationale
+
+| Stage | What it does | Why it is there | Known limit |
+| :--- | :--- | :--- | :--- |
+| Preparation | Uppercase A–Z; J→I; split doubled letters with X (Q for XX); pad odd length with Z (X after Z). | Gives Playfair valid digraphs. | Lossy: spaces, J and filler letters are not recovered. Ciphertext length equals prepared length. |
+| Tier 1: Playfair (LABYRINTH) | Replaces each digraph using the 5x5 keyed matrix. | Hides single-letter frequencies (IoC 0.0688 → 0.0551). | No letter encrypts to itself; AB→XY implies BA→YX. Only 25 letters. |
+| Tier 2: Vigenère (VALIANT) | Adds a period-7 shift to each letter. | Breaks Playfair's fixed digraph mapping and flattens frequencies further. | Linear and key-only: it merges with Tier 3 into one fixed per-position shift. |
+| Tier 3A: ADI swap | Swaps the two letters of every even-numbered digraph block. | Each output position carries its neighbour's Vigenère shift, which breaks the plain period-7 pattern. | Fixed and key-independent: it adds no secret. |
+| Tier 3B: PDD drift | Adds (3i + 7) mod 26 at position i. | Stretches the period of the total shift from 7 to 364 letters, longer than any challenge message. | Linear in i and independent of the plaintext, so the combined shift is still a fixed keystream. |
+
+### Keyspace
+
+| Component | Formula | Size | Bits |
+| :--- | :--- | :--- | :--- |
+| Playfair 5x5 matrix | 25! | 1.551e25 | ~2^83.7 |
+| Vigenère key (length 7) | 26^7 | 8.032e9 | ~2^32.9 |
+| Drift (δ, θ) | 26^2 | 676 | ~2^9.4 |
+| Total (nominal) | 25! x 26^7 x 26^2 | 8.422e37 | ~2^126.0 |
+| Distinct ciphers (at most) | total / (25 x 26) | 1.296e35 | ~2^116.6 |
+
+**Affine finding:** Tiers 2 and 3 together compute C[i] = X[perm(i)] + k[i] (mod 26), where X is the Playfair output, perm is the even-block swap and k[i] = V[perm(i) mod 7] + δ·i + θ depends only on the position. cca_analysis.py confirmed this on 200/200 random string pairs under two unrelated key sets: ciphertext differences equal Playfair-output differences, so the Tier 2/3 key cancels. The Tier 2/3 secret is therefore only 9 numbers (7 Vigenère shifts, δ, θ). Once the Playfair output for one known plaintext is known, they follow directly by subtraction, so nearly all of the difficulty lies in the Playfair matrix (~2^83.7). Known equivalent keys (25 cyclic shifts of the matrix; θ absorbed by the Vigenère key) reduce the nominal ~2^126.0 to at most ~2^116.6 distinct ciphers.
+
+### Flaw signatures of the challenge pairs
+
+**Flaw signatures:** each ciphertext was decrypted with the real keys and compared with its prepared plaintext. All ten ciphertexts keep the length of their prepared plaintext, so length alone does not reveal the incorrect pairs. Each flaw stays local: it damages at most two digraph blocks.
+
+| Pair | Status | Flaw injected | Damaged blocks | Wrong letters |
+| :--- | :--- | :--- | :--- | :--- |
+| 1 | Genuine | None | – | 0 / 24 |
+| 2 | Genuine | None | – | 0 / 32 |
+| 3 | Corrupted | One letter changed (+4) at index 5 | 2 | 2 / 36 |
+| 4 | Genuine | None | – | 0 / 40 |
+| 5 | Genuine | None | – | 0 / 40 |
+| 6 | Corrupted | Letters at indices 2-3 swapped (odd block 1) | 1 | 2 / 38 |
+| 7 | Genuine | None | – | 0 / 40 |
+| 8 | Genuine | None | – | 0 / 38 |
+| 9 | Corrupted | Last 4 letters shifted +11 | 16, 17 | 4 / 36 |
+| 10 | Genuine | None | – | 0 / 38 |
+
+**Honest assessment:** KTCC is a classroom challenge cipher, not a secure one. Its ciphertext IoC (0.0388) is close to random text (0.0385), so single-letter frequency analysis gives little, but it is weak against known-plaintext analysis: Tiers 2 and 3 reduce to a fixed keystream and the remaining work is a search over Playfair matrices. It should not be used to protect real data.
+
+---
+
+## 6. Team Contributions, Resources and Post-Challenge Outcome
+
+### Deliverable checklist
+
+| Deliverable | Report section | Repo file |
+| :--- | :--- | :--- |
+| 1. Cipher name and description | Section 2, Deliverable 1 | cca_cipher.py |
+| 2. Encryption technique and sequence | Section 2, Deliverable 2 | cca_cipher.py |
+| 3. Key, alphabet mapping, special rules | Section 2, Deliverable 3 | cca_cipher.py |
+| 4. Ten pairs (7 correct, 3 incorrect) | Section 2, Deliverable 4 | cca_challenge.py, challenge_dataset.json, challenge_dataset_public.json |
+| 5. Final explanation after the challenge | Section 2, Deliverable 5; Section 5 | cca_analysis.py, test_cca.py |
+| 6–10. Red Team deliverables | Not applicable | Not applicable: this group was the Blue Team |
+
+### Contributions
+
+| Student | Seat No. | Contribution |
+| :--- | :--- | :--- |
+| Mr. Hamza Saleem | CR-23009 | [TEAM TO FILL] |
+| Mr. Ameem Akhtar | CR-23013 | [TEAM TO FILL] |
+| Mr. Minhal Rizvi | CR-23017 | [TEAM TO FILL] |
+| Mr. Muhammad Usman | CR-23038 | [TEAM TO FILL] |
+| Mr. Maaz Wasim | CR-23041 | [TEAM TO FILL] |
+
+### Resource log
+
+| Resource | Used for |
+| :--- | :--- |
+| CT-486 CCA activity brief | Deliverable list, rules and rubric |
+| Academic references 1–6 (Section 9) | Playfair, Vigenère, Index of Coincidence and product-cipher background |
+| Python 3 standard library | Cipher, dataset generator, analysis and benchmarks |
+| unittest | 15 automated tests (test_cca.py) |
+| ReportLab, python-docx | PDF and Word reports |
+| Git and GitHub | Version control and code submission |
+
+**Challenge integrity:** [TEAM TO FILL] State when and how challenge_dataset_public.json was handed to the Red Team, and confirm that the keys, algorithm and incorrect pairs were not shared during the challenge.
+
+**Red Team outcome:** [TEAM TO FILL] Which techniques, incorrect pairs and keys the Red Team identified, and how close their answer was.
+
+---
+
+<!-- END GENERATED -->
+
 ## 7. Suggestions for Improving the Cipher's Security
 
-**Known limitation:** Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 remove this.
+**Known limitation:** Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 make the keystream depend on the plaintext instead of being fixed, which weakens this attack; Suggestion 2 targets the linear structure itself.
 
 1. **Autokey Keystream Dynamic Scheduling:** Replace periodic Vigenère repetitions with an autokey mechanism ($K[i] = P[i - L_V]$) to eliminate keystream periodicity.
 2. **Non-Linear S-Box Insertion:** Introduce non-linear substitution (AES/DES S-box style) between Tier 2 and Tier 3 to break linear modular solvability over $\mathbb{Z}_{26}$.
@@ -271,7 +362,7 @@ All project source files and automated test suites are publicly hosted on GitHub
 # 1. Inspect Blue Team Deliverables & Dataset:
 python cca_main.py --blue
 
-# 2. Run Automated Test Suite (6/6 Tests Passing):
+# 2. Run Automated Test Suite (15/15 Tests Passing):
 python test_cca.py
 
 # 3. Interactive Encryption/Decryption Terminal:
@@ -280,7 +371,10 @@ python cca_main.py --interactive
 # 4. Reproduce every IoC and timing number in this report:
 python cca_benchmark.py
 
-# 5. Recompile Publication-Grade PDF and Word Reports:
+# 5. Post-challenge analysis (keyspace, affine check, flaw signatures):
+python cca_analysis.py
+
+# 6. Recompile Publication-Grade PDF and Word Reports:
 python build_report_pdf.py
 python build_report_docx.py
 ```

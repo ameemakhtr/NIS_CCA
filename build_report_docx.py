@@ -22,6 +22,8 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.enum.table import WD_TABLE_ALIGNMENT
 from docx.oxml import parse_xml
 from docx.oxml.ns import nsdecls
+import report_inputs as ri
+from report_inputs import TEST_COUNT
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -503,7 +505,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     r_s5m.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
 
     doc.add_paragraph('How the CCA attributes named in the activity brief appear in this submission:')
-    cca_data = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', 'cca_cipher.py, cca_challenge.py, cca_benchmark.py, test_cca.py (6 tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them.', 'Deliverables 1–4'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes.", 'Deliverable 5; Benchmarks; Suggestions')]
+    cca_data = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', f'cca_cipher.py, cca_challenge.py, cca_analysis.py, cca_benchmark.py, test_cca.py ({TEST_COUNT} tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them.', 'Deliverables 1–4; Section 5'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes.", 'Deliverable 5; Benchmarks; Resistance Analysis (Section 5); Suggestions')]
     t_cca = doc.add_table(rows=len(cca_data), cols=3)
     t_cca.alignment = WD_TABLE_ALIGNMENT.CENTER
     for r_idx, row_vals in enumerate(cca_data):
@@ -527,18 +529,85 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
             set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
 
     # =========================================================
+    # SECTIONS 5-6: shared content from report_inputs.py
+    # =========================================================
+    def heading(text, size, page_break=False):
+        p = doc.add_paragraph()
+        p.paragraph_format.page_break_before = page_break
+        p.paragraph_format.space_before = Pt(8)
+        p.paragraph_format.space_after = Pt(6 if size > 12 else 3)
+        p.paragraph_format.keep_with_next = True
+        r = p.add_run(text)
+        r.font.name = 'Times New Roman'
+        r.font.size = Pt(size)
+        r.bold = True
+        r.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
+
+    def lead_par(text, keep_with_next=False):
+        p = doc.add_paragraph()
+        p.paragraph_format.keep_with_next = keep_with_next
+        head, sep, rest = text.partition(": ")
+        if sep and len(head) < 30:
+            p.add_run(head + ": ").bold = True
+            p.add_run(rest)
+        else:
+            p.add_run(text)
+
+    def grid(title, rows, intro=None):
+        heading(title, 11)
+        if intro:
+            lead_par(intro, keep_with_next=True)
+        t = doc.add_table(rows=len(rows), cols=len(rows[0]))
+        t.alignment = WD_TABLE_ALIGNMENT.CENTER
+        for r_idx, row_vals in enumerate(rows):
+            for c_idx, val in enumerate(row_vals):
+                cell = t.rows[r_idx].cells[c_idx]
+                p = cell.paragraphs[0]
+                p.paragraph_format.space_before = Pt(2)
+                p.paragraph_format.space_after = Pt(2)
+                p.paragraph_format.keep_with_next = r_idx < len(rows) - 1  # keep the table on one page
+                r = p.add_run(val)
+                r.font.name = 'Times New Roman'
+                r.font.size = Pt(8.5)
+                if r_idx == 0:
+                    r.bold = True
+                    set_cell_background(cell, "2C3E50")
+                    r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
+                elif c_idx == 0:
+                    r.bold = True
+                if r_idx > 0 and r_idx % 2 == 1:
+                    set_cell_background(cell, "F8FAFC")
+                set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
+        doc.add_paragraph().paragraph_format.space_after = Pt(4)
+
+    heading(ri.S5_TITLE, 14, page_break=True)
+    doc.add_paragraph(ri.S5_INTRO)
+    grid("Stage-by-stage rationale", ri.STAGE_ROWS)
+    grid("Keyspace", ri.KEYSPACE_ROWS)
+    lead_par(ri.S5_AFFINE)
+    grid("Flaw signatures of the challenge pairs", ri.FLAW_ROWS, intro=ri.S5_FLAWS)
+    lead_par(ri.S5_ASSESSMENT)
+
+    heading(ri.S6_TITLE, 14, page_break=True)
+    grid("Deliverable checklist", ri.CHECKLIST_ROWS)
+    grid("Contributions", ri.CONTRIBUTION_ROWS)
+    grid("Resource log", ri.RESOURCE_ROWS)
+    for text in ri.S6_PARAGRAPHS:
+        lead_par(text)
+
+    # =========================================================
     # SECTION 6: SUGGESTIONS FOR IMPROVEMENT
     # =========================================================
     p_s5 = doc.add_paragraph()
     p_s5.paragraph_format.space_before = Pt(8)
     p_s5.paragraph_format.space_after = Pt(6)
-    r_s5 = p_s5.add_run("5. Suggestions for Improving the Cipher's Security")
+    r_s5 = p_s5.add_run("7. Suggestions for Improving the Cipher's Security")
     r_s5.font.name = 'Times New Roman'
     r_s5.font.size = Pt(14)
     r_s5.bold = True
     r_s5.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
 
-    doc.add_paragraph('Known limitation: Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 remove this.')
+    doc.add_paragraph('Known limitation: Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 make the keystream depend on the plaintext instead of being fixed, which weakens this attack; Suggestion 2 targets the linear structure itself.')
     add_num_item(doc, "1.", "Dynamic Autokey Keystream Scheduling:", "Replace the periodic repeating Vigenère key with an autokey mechanism (K[i] = P[i - L_V]) to eliminate keystream periodicity and defeat Kasiski autocorrelation.")
     add_num_item(doc, "2.", "Non-Linear S-Box Permutation:", "Insert an 8-bit non-linear substitution box between Tier 2 and Tier 3 to break linear modular arithmetic over Z_26, preventing modular equation solvers from decoupling the stages.")
     add_num_item(doc, "3.", "Cipher Block Chaining (CBC) Feedback:", "Modularly add previous ciphertext digraphs into current plaintext digraphs (P'[b] = (P[b] + C[b-1]) mod 26) to eliminate identical ciphertext outputs for repeating phrases.")
@@ -550,7 +619,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s6 = doc.add_paragraph()
     p_s6.paragraph_format.space_before = Pt(8)
     p_s6.paragraph_format.space_after = Pt(6)
-    r_s6 = p_s6.add_run("6. Code Submission & Execution Details")
+    r_s6 = p_s6.add_run("8. Code Submission & Execution Details")
     r_s6.font.name = 'Times New Roman'
     r_s6.font.size = Pt(14)
     r_s6.bold = True
@@ -564,7 +633,8 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     add_callout_box(doc, [
         "# Automated Execution & Verification Commands",
         "python cca_main.py --blue         # Show cipher design and challenge dataset",
-        "python test_cca.py                # Run automated unit test suite (6/6 tests passing)",
+        f"python test_cca.py                # Run automated unit test suite ({TEST_COUNT}/{TEST_COUNT} tests passing)",
+        "python cca_analysis.py            # Post-challenge resistance analysis (Section 5)",
         "python build_report_pdf.py        # Recompile publication-grade PDF report",
         "python build_report_docx.py       # Recompile publication-grade Word DOCX report"
     ])
@@ -575,7 +645,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s7 = doc.add_paragraph()
     p_s7.paragraph_format.space_before = Pt(8)
     p_s7.paragraph_format.space_after = Pt(6)
-    r_s7 = p_s7.add_run("7. Academic References")
+    r_s7 = p_s7.add_run("9. Academic References")
     r_s7.font.name = 'Times New Roman'
     r_s7.font.size = Pt(14)
     r_s7.bold = True
@@ -595,6 +665,8 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     # Save DOCX
     doc.save(docx_path)
     print(f"[SUCCESS] Publication-grade DOCX successfully built: {docx_path}")
+    ri.sync_markdown()
+    ri.warn_placeholders("build_report_docx.py")
 
 
 if __name__ == "__main__":

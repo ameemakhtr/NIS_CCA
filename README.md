@@ -2,7 +2,7 @@
 ## Complex Computing Activity (CCA) – Classical Cipher Challenge [CLO3]
 ### Al-Kindi Tri-Tiered Composite Cipher (KTCC) – Blue Team Submission
 
-[![Language](https://img.shields.io/badge/Language-Python%203.14-blue.svg)](https://www.python.org/)
+[![Language](https://img.shields.io/badge/Language-Python%203.10%2B-blue.svg)](https://www.python.org/)
 [![Cryptography](https://img.shields.io/badge/Cryptography-Classical%20Product%20Cipher-darkgreen.svg)]()
 [![Design](https://img.shields.io/badge/Primitives-Playfair%20%2B%20Vigen%C3%A8re%20%2B%20ADI--PDD-orange.svg)]()
 [![University](https://img.shields.io/badge/NED%20University-CS%20%26%20IT%20Department-red.svg)](https://www.neduet.edu.pk/)
@@ -54,7 +54,7 @@ In accordance with PEC / Washington Accord CLO3 (Design of Security Mechanisms),
 | **Space Complexity** | $\mathcal{O}(N)$ | $\mathcal{O}(N)$ | $\mathcal{O}(N)$ | $\mathbf{\mathcal{O}(N)}$ |
 | **Index of Coincidence (IoC)** | $0.0688$ (same as plaintext) | $0.0551$ (Biased) | $0.0441$ (Periodic) | $\mathbf{0.0388}$ (Near random) |
 | **Encrypt time (1,000 chars)** | $0.190\text{ ms}$ | $0.323\text{ ms}$ | $0.251\text{ ms}$ | $\mathbf{1.208\text{ ms}}$ |
-| **Known-Plaintext Resistance** | Trivial ($1$ char) | Low | Trivial ($L_V$ chars) | **Low** (Tiers 2+3 collapse into one positional keystream; see Suggestions in the report) |
+| **Known-Plaintext Resistance** | Trivial ($1$ char) | Low | Trivial ($L_V$ chars) | **Low** (Tiers 2+3 collapse into one fixed positional keystream; the report's Suggestions section makes it plaintext-dependent) |
 
 *IoC and timings come from `python cca_benchmark.py` (timings are best of 50 runs on one machine and vary by hardware).*
 
@@ -73,7 +73,9 @@ NIS_CCA/
 ├── cca_challenge.py                     # Challenge Dataset Generator (10 Pairs with 3 Traps)
 ├── cca_main.py                          # Unified CLI Console (Blue Team, Interactive)
 ├── cca_benchmark.py                     # Reproduces every IoC and timing number in the reports
-├── test_cca.py                          # Automated Unit & Verification Test Suite (6 Tests)
+├── cca_analysis.py                      # Post-challenge analysis: keyspace, affine check, flaw signatures
+├── report_inputs.py                     # Single source for report Sections 5-6 (PDF, DOCX, REPORT.md)
+├── test_cca.py                          # Automated Unit & Verification Test Suite (15 Tests)
 ├── challenge_dataset.json               # Exported 10 Challenge Pairs with Ground Truth (Blue Team only)
 ├── challenge_dataset_public.json        # Handed to the Red Team: pairs only, no keys or ground truth
 ├── ned_logo_1.png                       # NED University Official Emblem
@@ -91,16 +93,19 @@ python cca_main.py --blue
 # 2. Launch Interactive Encryption & Decryption Terminal
 python cca_main.py --interactive
 
-# 3. Run Automated Unit Test Suite (6/6 passing)
+# 3. Run Automated Unit Test Suite (all tests passing)
 python test_cca.py
 
 # 4. Reproduce every IoC and timing number in the reports
 python cca_benchmark.py
 
-# 5. Re-generate Publication-Grade PDF Report
+# 5. Post-challenge analysis (keyspace, affine check, flaw signatures)
+python cca_analysis.py
+
+# 6. Re-generate Publication-Grade PDF Report
 python build_report_pdf.py
 
-# 6. Re-generate Publication-Grade DOCX Report
+# 7. Re-generate Publication-Grade DOCX Report
 python build_report_docx.py
 ```
 
@@ -111,7 +116,7 @@ python build_report_docx.py
 The formal, publication-grade academic reports are precompiled and available directly in the repository:
 * **PDF Report:** [`Complex_Computing_Activity_Report.pdf`](Complex_Computing_Activity_Report.pdf)
 * **Word Report:** [`Complex_Computing_Activity_Report.docx`](Complex_Computing_Activity_Report.docx)
-* **Typography:** Academic Times New Roman (11 pt), 1-inch margins, Table of Contents, running headers, and dynamic page numbering.
+* **Typography:** Academic Times New Roman (11 pt), 1-inch margins, running headers, and dynamic page numbering.
 * **Cover Page:** Formal NED University formatting, crest emblem, department metadata, and complete student credentials.
 
 ---
