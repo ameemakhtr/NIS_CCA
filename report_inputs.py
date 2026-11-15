@@ -69,7 +69,7 @@ S5_ASSESSMENT = ("Honest assessment: KTCC is a classroom challenge cipher, not a
                  "a search over Playfair matrices. It should not be used to protect real data.")
 
 # ---------------- Section 5 ----------------
-S6_TITLE = "5. Team Contributions, Resources and Post-Challenge Outcome"
+S6_TITLE = "5. Team Contributions and Resources"
 
 CONTRIBUTION_ROWS = [
     ("Student", "Seat No.", "Contribution"),

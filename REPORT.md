@@ -287,7 +287,7 @@ This section is the post-challenge explanation of the cipher. Every number below
 
 ---
 
-## 5. Team Contributions, Resources and Post-Challenge Outcome
+## 5. Team Contributions and Resources
 
 ### Contributions
 
