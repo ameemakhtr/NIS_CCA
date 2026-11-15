@@ -617,8 +617,6 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(Paragraph(ri.S6_TITLE, section_heading))
     titled_grid("Contributions", ri.CONTRIBUTION_ROWS, [1.8, 1.0, 4.1])
     titled_grid("Resource log", ri.RESOURCE_ROWS, [2.4, 4.5])
-    for p in ri.S6_PARAGRAPHS:
-        story.append(lead_par(p))
     story.append(PageBreak())
 
     # =========================================================
@@ -697,7 +695,6 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"[SUCCESS] Publication-grade PDF successfully built: {pdf_path}")
     ri.sync_markdown()
-    ri.warn_placeholders("build_report_pdf.py")
 
 
 if __name__ == "__main__":

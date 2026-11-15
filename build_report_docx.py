@@ -555,8 +555,6 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     heading(ri.S6_TITLE, 14, page_break=True)
     grid("Contributions", ri.CONTRIBUTION_ROWS)
     grid("Resource log", ri.RESOURCE_ROWS)
-    for text in ri.S6_PARAGRAPHS:
-        lead_par(text)
 
     # =========================================================
     # SECTION 6: SUGGESTIONS FOR IMPROVEMENT
@@ -629,7 +627,6 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     doc.save(docx_path)
     print(f"[SUCCESS] Publication-grade DOCX successfully built: {docx_path}")
     ri.sync_markdown()
-    ri.warn_placeholders("build_report_docx.py")
 
 
 if __name__ == "__main__":

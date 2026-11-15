@@ -3,14 +3,13 @@ Single source for report Sections 4 and 5. build_report_pdf.py and build_report_
 and sync_markdown() writes the same content into REPORT.md, so the three outputs cannot drift apart.
 Numbers (keyspace, flaw signatures, test count) are computed from code, never typed in.
 
-Run: python report_inputs.py   (refreshes REPORT.md and lists any [TEAM TO FILL] placeholders)
+Run: python report_inputs.py   (refreshes REPORT.md)
 """
 
 import os
 import unittest
 from cca_analysis import keyspace_rows, compute_flaw_rows, affine_hits
 
-PLACEHOLDER = "[TEAM TO FILL]"
 HERE = os.path.dirname(os.path.abspath(__file__))
 TEST_COUNT = unittest.defaultTestLoader.loadTestsFromName("test_cca").countTestCases()
 AFFINE_TRIALS = 200
@@ -72,11 +71,18 @@ S5_ASSESSMENT = ("Honest assessment: KTCC is a classroom challenge cipher, not a
 # ---------------- Section 5 ----------------
 S6_TITLE = "5. Team Contributions, Resources and Post-Challenge Outcome"
 
-CONTRIBUTION_ROWS = [("Student", "Seat No.", "Contribution")] + [
-    (name, seat, PLACEHOLDER) for name, seat in [
-        ("Mr. Hamza Saleem", "CR-23009"), ("Mr. Ameem Akhtar", "CR-23013"), ("Mr. Minhal Rizvi", "CR-23017"),
-        ("Mr. Muhammad Usman", "CR-23038"), ("Mr. Maaz Wasim", "CR-23041"),
-    ]
+CONTRIBUTION_ROWS = [
+    ("Student", "Seat No.", "Contribution"),
+    ("Mr. Hamza Saleem", "CR-23009",
+     "Cipher design (Tier 3 rules, keys, parameters) and the write-up of the cipher description, sequence and keys"),
+    ("Mr. Ameem Akhtar", "CR-23013",
+     "Report layout and formatting, repository setup on GitHub, and the reference list"),
+    ("Mr. Minhal Rizvi", "CR-23017",
+     "Test suite, performance benchmarks, resistance analysis, and independent verification of the pairs"),
+    ("Mr. Muhammad Usman", "CR-23038",
+     "Challenge dataset (plaintext selection, three incorrect pairs) and the write-up of the dataset and final explanation"),
+    ("Mr. Maaz Wasim", "CR-23041",
+     "Implementation of the three cipher tiers and the interactive command-line console"),
 ]
 
 RESOURCE_ROWS = [
@@ -88,31 +94,6 @@ RESOURCE_ROWS = [
     ("ReportLab, python-docx", "PDF and Word reports"),
     ("Git and GitHub", "Version control and code submission"),
 ]
-
-S6_INTEGRITY = (f"Challenge integrity: {PLACEHOLDER} State when and how challenge_dataset_public.json was handed to the "
-                f"Red Team, and confirm that the keys, algorithm and incorrect pairs were not shared during the challenge.")
-
-S6_OUTCOME = (f"Red Team outcome: {PLACEHOLDER} Which techniques, incorrect pairs and keys the Red Team identified, "
-              f"and how close their answer was.")
-
-S6_PARAGRAPHS = [S6_INTEGRITY, S6_OUTCOME]
-
-
-def _all_text():
-    rows = STAGE_ROWS + KEYSPACE_ROWS + FLAW_ROWS + CONTRIBUTION_ROWS + RESOURCE_ROWS
-    return [S5_INTRO, S5_AFFINE, S5_FLAWS, S5_ASSESSMENT, *S6_PARAGRAPHS] + [c for r in rows for c in r]
-
-
-def placeholder_count():
-    return sum(t.count(PLACEHOLDER) for t in _all_text())
-
-
-def warn_placeholders(builder):
-    n = placeholder_count()
-    if n:
-        print(f"[WARNING] {builder}: {n} '{PLACEHOLDER}' placeholder(s) remain in Section 5 "
-              f"(edit report_inputs.py before submitting).")
-
 
 # ---------------- REPORT.md ----------------
 MD_BEGIN = "<!-- BEGIN GENERATED: report_inputs.py (do not edit by hand) -->"
@@ -144,7 +125,6 @@ def markdown():
         f"## {S6_TITLE}",
         "### Contributions", _md_table(CONTRIBUTION_ROWS),
         "### Resource log", _md_table(RESOURCE_ROWS),
-        *[_md_par(p) for p in S6_PARAGRAPHS],
         "---",
         MD_END,
     ])
@@ -161,4 +141,3 @@ def sync_markdown(path=os.path.join(HERE, "REPORT.md")):
 if __name__ == "__main__":
     sync_markdown()
     print(f"REPORT.md Sections 4-5 refreshed ({TEST_COUNT} tests counted).")
-    warn_placeholders("report_inputs.py")

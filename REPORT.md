@@ -293,11 +293,11 @@ This section is the post-challenge explanation of the cipher. Every number below
 
 | Student | Seat No. | Contribution |
 | :--- | :--- | :--- |
-| Mr. Hamza Saleem | CR-23009 | [TEAM TO FILL] |
-| Mr. Ameem Akhtar | CR-23013 | [TEAM TO FILL] |
-| Mr. Minhal Rizvi | CR-23017 | [TEAM TO FILL] |
-| Mr. Muhammad Usman | CR-23038 | [TEAM TO FILL] |
-| Mr. Maaz Wasim | CR-23041 | [TEAM TO FILL] |
+| Mr. Hamza Saleem | CR-23009 | Cipher design (Tier 3 rules, keys, parameters) and the write-up of the cipher description, sequence and keys |
+| Mr. Ameem Akhtar | CR-23013 | Report layout and formatting, repository setup on GitHub, and the reference list |
+| Mr. Minhal Rizvi | CR-23017 | Test suite, performance benchmarks, resistance analysis, and independent verification of the pairs |
+| Mr. Muhammad Usman | CR-23038 | Challenge dataset (plaintext selection, three incorrect pairs) and the write-up of the dataset and final explanation |
+| Mr. Maaz Wasim | CR-23041 | Implementation of the three cipher tiers and the interactive command-line console |
 
 ### Resource log
 
@@ -309,10 +309,6 @@ This section is the post-challenge explanation of the cipher. Every number below
 | unittest | 15 automated tests (test_cca.py) |
 | ReportLab, python-docx | PDF and Word reports |
 | Git and GitHub | Version control and code submission |
-
-**Challenge integrity:** [TEAM TO FILL] State when and how challenge_dataset_public.json was handed to the Red Team, and confirm that the keys, algorithm and incorrect pairs were not shared during the challenge.
-
-**Red Team outcome:** [TEAM TO FILL] Which techniques, incorrect pairs and keys the Red Team identified, and how close their answer was.
 
 ---
 
