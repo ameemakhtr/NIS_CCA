@@ -8,7 +8,7 @@ Matches the exact academic style, structure, and density of NIS_CCP:
   - Clean Cover Page: Title, Subtitle, Final Year - Cyber Security, Batch: 2023, NED Logo
   - Group Members sorted by roll number: Hamza (09), Ameem (13), Minhal (17), Usman (38), Maaz (41)
   - Submitted to: Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)
-  - No redundant cover lines, no TOC page, no rubric self-grading table
+  - No redundant cover lines, no TOC page
   - Distinct bullet and numbered items on separate lines with proper indentation
   - Blue Team Deliverables 1–5 (our assigned role)
   - Mathematical formulations, Callout boxes, 5x5 Matrix, Challenge Dataset, Benchmarks
@@ -493,43 +493,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     )
 
     # =========================================================
-    # SECTION 5: CCA ATTRIBUTE MAPPING (no self-grading)
-    # =========================================================
-    p_s5m = doc.add_paragraph()
-    p_s5m.paragraph_format.space_before = Pt(8)
-    p_s5m.paragraph_format.space_after = Pt(6)
-    r_s5m = p_s5m.add_run("4. CCA Attribute Mapping & Resources")
-    r_s5m.font.name = 'Times New Roman'
-    r_s5m.font.size = Pt(14)
-    r_s5m.bold = True
-    r_s5m.font.color.rgb = RGBColor(0x1A, 0x25, 0x2F)
-
-    doc.add_paragraph('How the CCA attributes named in the activity brief appear in this submission:')
-    cca_data = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', f'cca_cipher.py, cca_challenge.py, cca_analysis.py, cca_benchmark.py, test_cca.py ({TEST_COUNT} tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them.', 'Deliverables 1–4; Section 5'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes.", 'Deliverable 5; Benchmarks; Resistance Analysis (Section 5); Suggestions')]
-    t_cca = doc.add_table(rows=len(cca_data), cols=3)
-    t_cca.alignment = WD_TABLE_ALIGNMENT.CENTER
-    for r_idx, row_vals in enumerate(cca_data):
-        row = t_cca.rows[r_idx]
-        for c_idx, val in enumerate(row_vals):
-            cell = row.cells[c_idx]
-            p = cell.paragraphs[0]
-            p.paragraph_format.space_before = Pt(2)
-            p.paragraph_format.space_after = Pt(2)
-            r = p.add_run(val)
-            r.font.name = 'Times New Roman'
-            r.font.size = Pt(8.5)
-            if r_idx == 0:
-                r.bold = True
-                set_cell_background(cell, "2C3E50")
-                r.font.color.rgb = RGBColor(0xFF, 0xFF, 0xFF)
-            elif c_idx == 0:
-                r.bold = True
-            if r_idx > 0 and r_idx % 2 == 1:
-                set_cell_background(cell, "F8FAFC")
-            set_cell_margins(cell, top=40, bottom=40, left=60, right=60)
-
-    # =========================================================
-    # SECTIONS 5-6: shared content from report_inputs.py
+    # SECTIONS 4-5: shared content from report_inputs.py
     # =========================================================
     def heading(text, size, page_break=False):
         p = doc.add_paragraph()
@@ -589,7 +553,6 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     lead_par(ri.S5_ASSESSMENT)
 
     heading(ri.S6_TITLE, 14, page_break=True)
-    grid("Deliverable checklist", ri.CHECKLIST_ROWS)
     grid("Contributions", ri.CONTRIBUTION_ROWS)
     grid("Resource log", ri.RESOURCE_ROWS)
     for text in ri.S6_PARAGRAPHS:
@@ -601,7 +564,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s5 = doc.add_paragraph()
     p_s5.paragraph_format.space_before = Pt(8)
     p_s5.paragraph_format.space_after = Pt(6)
-    r_s5 = p_s5.add_run("7. Suggestions for Improving the Cipher's Security")
+    r_s5 = p_s5.add_run("6. Suggestions for Improving the Cipher's Security")
     r_s5.font.name = 'Times New Roman'
     r_s5.font.size = Pt(14)
     r_s5.bold = True
@@ -619,7 +582,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s6 = doc.add_paragraph()
     p_s6.paragraph_format.space_before = Pt(8)
     p_s6.paragraph_format.space_after = Pt(6)
-    r_s6 = p_s6.add_run("8. Code Submission & Execution Details")
+    r_s6 = p_s6.add_run("7. Code Submission & Execution Details")
     r_s6.font.name = 'Times New Roman'
     r_s6.font.size = Pt(14)
     r_s6.bold = True
@@ -634,7 +597,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
         "# Automated Execution & Verification Commands",
         "python cca_main.py --blue         # Show cipher design and challenge dataset",
         f"python test_cca.py                # Run automated unit test suite ({TEST_COUNT}/{TEST_COUNT} tests passing)",
-        "python cca_analysis.py            # Post-challenge resistance analysis (Section 5)",
+        "python cca_analysis.py            # Post-challenge resistance analysis (Section 4)",
         "python build_report_pdf.py        # Recompile publication-grade PDF report",
         "python build_report_docx.py       # Recompile publication-grade Word DOCX report"
     ])
@@ -645,7 +608,7 @@ def build_cca_docx(output_filename="Complex_Computing_Activity_Report.docx"):
     p_s7 = doc.add_paragraph()
     p_s7.paragraph_format.space_before = Pt(8)
     p_s7.paragraph_format.space_after = Pt(6)
-    r_s7 = p_s7.add_run("9. Academic References")
+    r_s7 = p_s7.add_run("8. Academic References")
     r_s7.font.name = 'Times New Roman'
     r_s7.font.size = Pt(14)
     r_s7.bold = True

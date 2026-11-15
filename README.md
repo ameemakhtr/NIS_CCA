@@ -74,7 +74,7 @@ NIS_CCA/
 ├── cca_main.py                          # Unified CLI Console (Blue Team, Interactive)
 ├── cca_benchmark.py                     # Reproduces every IoC and timing number in the reports
 ├── cca_analysis.py                      # Post-challenge analysis: keyspace, affine check, flaw signatures
-├── report_inputs.py                     # Single source for report Sections 5-6 (PDF, DOCX, REPORT.md)
+├── report_inputs.py                     # Single source for report Sections 4-5 (PDF, DOCX, REPORT.md)
 ├── test_cca.py                          # Automated Unit & Verification Test Suite (15 Tests)
 ├── challenge_dataset.json               # Exported 10 Challenge Pairs with Ground Truth (Blue Team only)
 ├── challenge_dataset_public.json        # Handed to the Red Team: pairs only, no keys or ground truth

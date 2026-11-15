@@ -238,23 +238,11 @@ Measured with `cca_benchmark.py` (best of 50 runs on one development machine, Py
 
 ---
 
-## 4. CCA Attribute Mapping & Resources
-
-How the CCA attributes named in the activity brief appear in this submission:
-
-| CCA Attribute | Application in This Activity | Evidence |
-| :--- | :--- | :--- |
-| **CCA-1: Range of Resources** | Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub. | cca_cipher.py, cca_challenge.py, cca_analysis.py, cca_benchmark.py, test_cca.py (15 tests), challenge_dataset_public.json |
-| **CCA-3: Innovation** | Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them. | Deliverables 1–4; Section 5 |
-| **CCA-5: Familiarity** | Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes. | Deliverable 5; Benchmarks; Resistance Analysis (Section 5); Suggestions |
-
----
-
 <!-- BEGIN GENERATED: report_inputs.py (do not edit by hand) -->
 
-## 5. Design Rationale and Resistance Analysis
+## 4. Design Rationale and Resistance Analysis
 
-This section is part of the post-challenge explanation (Deliverable 5). Every number below is computed by cca_analysis.py with the real keys.
+This section is the post-challenge explanation of the cipher. Every number below is computed by cca_analysis.py with the real keys.
 
 ### Stage-by-stage rationale
 
@@ -299,18 +287,7 @@ This section is part of the post-challenge explanation (Deliverable 5). Every nu
 
 ---
 
-## 6. Team Contributions, Resources and Post-Challenge Outcome
-
-### Deliverable checklist
-
-| Deliverable | Report section | Repo file |
-| :--- | :--- | :--- |
-| 1. Cipher name and description | Section 2, Deliverable 1 | cca_cipher.py |
-| 2. Encryption technique and sequence | Section 2, Deliverable 2 | cca_cipher.py |
-| 3. Key, alphabet mapping, special rules | Section 2, Deliverable 3 | cca_cipher.py |
-| 4. Ten pairs (7 correct, 3 incorrect) | Section 2, Deliverable 4 | cca_challenge.py, challenge_dataset.json, challenge_dataset_public.json |
-| 5. Final explanation after the challenge | Section 2, Deliverable 5; Section 5 | cca_analysis.py, test_cca.py |
-| 6–10. Red Team deliverables | Not applicable | Not applicable: this group was the Blue Team |
+## 5. Team Contributions, Resources and Post-Challenge Outcome
 
 ### Contributions
 
@@ -326,8 +303,8 @@ This section is part of the post-challenge explanation (Deliverable 5). Every nu
 
 | Resource | Used for |
 | :--- | :--- |
-| CT-486 CCA activity brief | Deliverable list, rules and rubric |
-| Academic references 1–6 (Section 9) | Playfair, Vigenère, Index of Coincidence and product-cipher background |
+| CT-486 CCA activity brief | Deliverable list and rules |
+| Academic references 1–6 (Section 8) | Playfair, Vigenère, Index of Coincidence and product-cipher background |
 | Python 3 standard library | Cipher, dataset generator, analysis and benchmarks |
 | unittest | 15 automated tests (test_cca.py) |
 | ReportLab, python-docx | PDF and Word reports |
@@ -341,7 +318,7 @@ This section is part of the post-challenge explanation (Deliverable 5). Every nu
 
 <!-- END GENERATED -->
 
-## 7. Suggestions for Improving the Cipher's Security
+## 6. Suggestions for Improving the Cipher's Security
 
 **Known limitation:** Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 make the keystream depend on the plaintext instead of being fixed, which weakens this attack; Suggestion 2 targets the linear structure itself.
 
@@ -352,7 +329,7 @@ This section is part of the post-challenge explanation (Deliverable 5). Every nu
 
 ---
 
-## 8. Code Submission & Execution Details
+## 7. Code Submission & Execution Details
 
 All project source files and automated test suites are publicly hosted on GitHub at:  
 **Repository Link:** [https://github.com/ameemakhtr/NIS_CCA](https://github.com/ameemakhtr/NIS_CCA)
@@ -381,7 +358,7 @@ python build_report_docx.py
 
 ---
 
-## 9. Academic References
+## 8. Academic References
 
 1. Al-Kindi, Abu Yusuf Ya'qub ibn Ishaq (c. 850 CE). *Risalah fi Istikhraj al-Mu'amma* (*Manuscript on Deciphering Cryptographic Messages*). House of Wisdom, Baghdad.
 2. Shannon, Claude E. (1949). "Communication Theory of Secrecy Systems." *Bell System Technical Journal*, 28(4), 656–715.

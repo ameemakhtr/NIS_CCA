@@ -1,5 +1,5 @@
 """
-Single source for report Sections 5 and 6. build_report_pdf.py and build_report_docx.py render from here,
+Single source for report Sections 4 and 5. build_report_pdf.py and build_report_docx.py render from here,
 and sync_markdown() writes the same content into REPORT.md, so the three outputs cannot drift apart.
 Numbers (keyspace, flaw signatures, test count) are computed from code, never typed in.
 
@@ -17,10 +17,10 @@ AFFINE_TRIALS = 200
 _AFFINE_HITS = affine_hits(AFFINE_TRIALS)
 _KEYSPACE = keyspace_rows()
 
-# ---------------- Section 5 ----------------
-S5_TITLE = "5. Design Rationale and Resistance Analysis"
+# ---------------- Section 4 ----------------
+S5_TITLE = "4. Design Rationale and Resistance Analysis"
 
-S5_INTRO = ("This section is part of the post-challenge explanation (Deliverable 5). Every number below is "
+S5_INTRO = ("This section is the post-challenge explanation of the cipher. Every number below is "
             "computed by cca_analysis.py with the real keys.")
 
 STAGE_ROWS = [
@@ -69,19 +69,8 @@ S5_ASSESSMENT = ("Honest assessment: KTCC is a classroom challenge cipher, not a
                  "against known-plaintext analysis: Tiers 2 and 3 reduce to a fixed keystream and the remaining work is "
                  "a search over Playfair matrices. It should not be used to protect real data.")
 
-# ---------------- Section 6 ----------------
-S6_TITLE = "6. Team Contributions, Resources and Post-Challenge Outcome"
-
-CHECKLIST_ROWS = [
-    ("Deliverable", "Report section", "Repo file"),
-    ("1. Cipher name and description", "Section 2, Deliverable 1", "cca_cipher.py"),
-    ("2. Encryption technique and sequence", "Section 2, Deliverable 2", "cca_cipher.py"),
-    ("3. Key, alphabet mapping, special rules", "Section 2, Deliverable 3", "cca_cipher.py"),
-    ("4. Ten pairs (7 correct, 3 incorrect)", "Section 2, Deliverable 4",
-     "cca_challenge.py, challenge_dataset.json, challenge_dataset_public.json"),
-    ("5. Final explanation after the challenge", "Section 2, Deliverable 5; Section 5", "cca_analysis.py, test_cca.py"),
-    ("6–10. Red Team deliverables", "Not applicable", "Not applicable: this group was the Blue Team"),
-]
+# ---------------- Section 5 ----------------
+S6_TITLE = "5. Team Contributions, Resources and Post-Challenge Outcome"
 
 CONTRIBUTION_ROWS = [("Student", "Seat No.", "Contribution")] + [
     (name, seat, PLACEHOLDER) for name, seat in [
@@ -92,8 +81,8 @@ CONTRIBUTION_ROWS = [("Student", "Seat No.", "Contribution")] + [
 
 RESOURCE_ROWS = [
     ("Resource", "Used for"),
-    ("CT-486 CCA activity brief", "Deliverable list, rules and rubric"),
-    ("Academic references 1–6 (Section 9)", "Playfair, Vigenère, Index of Coincidence and product-cipher background"),
+    ("CT-486 CCA activity brief", "Deliverable list and rules"),
+    ("Academic references 1–6 (Section 8)", "Playfair, Vigenère, Index of Coincidence and product-cipher background"),
     ("Python 3 standard library", "Cipher, dataset generator, analysis and benchmarks"),
     ("unittest", f"{TEST_COUNT} automated tests (test_cca.py)"),
     ("ReportLab, python-docx", "PDF and Word reports"),
@@ -110,7 +99,7 @@ S6_PARAGRAPHS = [S6_INTEGRITY, S6_OUTCOME]
 
 
 def _all_text():
-    rows = STAGE_ROWS + KEYSPACE_ROWS + FLAW_ROWS + CHECKLIST_ROWS + CONTRIBUTION_ROWS + RESOURCE_ROWS
+    rows = STAGE_ROWS + KEYSPACE_ROWS + FLAW_ROWS + CONTRIBUTION_ROWS + RESOURCE_ROWS
     return [S5_INTRO, S5_AFFINE, S5_FLAWS, S5_ASSESSMENT, *S6_PARAGRAPHS] + [c for r in rows for c in r]
 
 
@@ -121,7 +110,7 @@ def placeholder_count():
 def warn_placeholders(builder):
     n = placeholder_count()
     if n:
-        print(f"[WARNING] {builder}: {n} '{PLACEHOLDER}' placeholder(s) remain in Section 6 "
+        print(f"[WARNING] {builder}: {n} '{PLACEHOLDER}' placeholder(s) remain in Section 5 "
               f"(edit report_inputs.py before submitting).")
 
 
@@ -153,7 +142,6 @@ def markdown():
         _md_par(S5_ASSESSMENT),
         "---",
         f"## {S6_TITLE}",
-        "### Deliverable checklist", _md_table(CHECKLIST_ROWS),
         "### Contributions", _md_table(CONTRIBUTION_ROWS),
         "### Resource log", _md_table(RESOURCE_ROWS),
         *[_md_par(p) for p in S6_PARAGRAPHS],
@@ -172,5 +160,5 @@ def sync_markdown(path=os.path.join(HERE, "REPORT.md")):
 
 if __name__ == "__main__":
     sync_markdown()
-    print(f"REPORT.md Sections 5-6 refreshed ({TEST_COUNT} tests counted).")
+    print(f"REPORT.md Sections 4-5 refreshed ({TEST_COUNT} tests counted).")
     warn_placeholders("report_inputs.py")

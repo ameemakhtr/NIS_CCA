@@ -8,7 +8,7 @@ Matches the exact academic style, structure, and density of NIS_CCP:
   - Clean Cover Page: Title, Subtitle, Final Year - Cyber Security, Batch: 2023, NED Logo
   - Group Members sorted by roll number: Hamza (09), Ameem (13), Minhal (17), Usman (38), Maaz (41)
   - Submitted to: Ms. Sayyda Sahar Fatima (Lecturer, Department of CS & IT)
-  - No redundant cover lines, no duplicate reports, no TOC page, no rubric self-grading table
+  - No redundant cover lines, no duplicate reports, no TOC page
   - All table cells wrapped in Paragraphs with auto-wrapping, zero text overlap
   - Distinct bullet and numbered items on separate lines with proper indentation
   - Blue Team Deliverables 1–5 (our assigned role)
@@ -579,37 +579,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(Spacer(1, 6))
 
     # =========================================================
-    # SECTION 5: CCA ATTRIBUTE MAPPING (no self-grading)
-    # =========================================================
-    story.append(Paragraph("4. CCA Attribute Mapping & Resources", section_heading))
-    story.append(Paragraph('How the CCA attributes named in the activity brief appear in this submission:', body_style))
-    cca_raw = [('CCA Attribute', 'Application in This Activity', 'Evidence'), ('CCA-1: Range of Resources', 'Five-member team; the activity brief; six published references (Academic References); the 10-pair challenge dataset; analytical methods (Index of Coincidence, timing benchmarks); Python 3.14 standard library, unittest, ReportLab, python-docx, Git and GitHub.', f'cca_cipher.py, cca_challenge.py, cca_analysis.py, cca_benchmark.py, test_cca.py ({TEST_COUNT} tests), challenge_dataset_public.json'), ('CCA-3: Innovation', 'Team-designed Tier 3 (ADI-PDD) combining an even-block digraph swap with a position-dependent affine drift, layered on Playfair and Vigenère. The 3 incorrect pairs use three different flaw types (substitution, transposition, tail shift), so no single check catches all of them.', 'Deliverables 1–4; Section 5'), ('CCA-5: Familiarity', "Classical principles (Playfair geometry, Vigenère periodicity, Friedman's IoC) applied to design an unfamiliar three-layer composite. Ciphertext IoC is 0.0388, close to random (0.0385). The design's own limit is identified, with fixes.", 'Deliverable 5; Benchmarks; Resistance Analysis (Section 5); Suggestions')]
-    cca_data = []
-    for r_idx, row in enumerate(cca_raw):
-        p_row = []
-        for c_idx, val in enumerate(row):
-            if r_idx == 0:
-                p_row.append(Paragraph(val, th_style))
-            elif c_idx == 0:
-                p_row.append(Paragraph(val, td_bold))
-            else:
-                p_row.append(Paragraph(val, td_style))
-        cca_data.append(p_row)
-    t_cca = Table(cca_data, colWidths=[1.4*inch, 3.5*inch, 2.0*inch])
-    t_cca.setStyle(TableStyle([
-        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#2C3E50")),
-        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
-        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
-        ('BOTTOMPADDING', (0, 0), (-1, -1), 2.5),
-        ('TOPPADDING', (0, 0), (-1, -1), 2.5),
-        ('GRID', (0, 0), (-1, -1), 0.5, colors.HexColor("#CBD5E1")),
-        ('ROWBACKGROUNDS', (0, 1), (-1, -1), [colors.white, colors.HexColor("#F8FAFC")])
-    ]))
-    story.append(t_cca)
-    story.append(PageBreak())
-
-    # =========================================================
-    # SECTIONS 5-6: shared content from report_inputs.py
+    # SECTIONS 4-5: shared content from report_inputs.py
     # =========================================================
     def lead_par(text):
         head, sep, rest = text.partition(": ")
@@ -645,7 +615,6 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     story.append(Spacer(1, 6))
 
     story.append(Paragraph(ri.S6_TITLE, section_heading))
-    titled_grid("Deliverable checklist", ri.CHECKLIST_ROWS, [2.4, 1.9, 2.6])
     titled_grid("Contributions", ri.CONTRIBUTION_ROWS, [1.8, 1.0, 4.1])
     titled_grid("Resource log", ri.RESOURCE_ROWS, [2.4, 4.5])
     for p in ri.S6_PARAGRAPHS:
@@ -655,7 +624,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 6: SUGGESTIONS FOR IMPROVEMENT
     # =========================================================
-    story.append(Paragraph("7. Suggestions for Improving the Cipher's Security", section_heading))
+    story.append(Paragraph("6. Suggestions for Improving the Cipher's Security", section_heading))
     story.append(Paragraph(
         "<b>Known limitation:</b> Tiers 2 and 3 only add position-dependent shifts plus a fixed swap, so together they act as one fixed keystream. With the Playfair matrix and a few known pairs, that keystream can be read off directly. Suggestions 1 and 3 make the keystream depend on the plaintext instead of being fixed, which weakens this attack; Suggestion 2 targets the linear structure itself. To raise KTCC resilience without increasing asymptotic complexity:",
         body_style
@@ -683,7 +652,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 6: CODE SUBMISSION & EXECUTION DETAILS
     # =========================================================
-    story.append(Paragraph("8. Code Submission & Execution Details", section_heading))
+    story.append(Paragraph("7. Code Submission & Execution Details", section_heading))
     story.append(Paragraph(
         "All project source files and automated test suites are publicly hosted on GitHub at: <b><u>https://github.com/ameemakhtr/NIS_CCA</u></b>",
         body_style
@@ -695,7 +664,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
         "<b># Automated Execution & Verification Commands</b><br/>"
         "python cca_main.py --blue &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Show cipher design and challenge dataset<br/>"
         f"python test_cca.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Run automated unit test suite ({TEST_COUNT}/{TEST_COUNT} tests passing)<br/>"
-        "python cca_analysis.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Post-challenge resistance analysis (Section 5)<br/>"
+        "python cca_analysis.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Post-challenge resistance analysis (Section 4)<br/>"
         "python build_report_pdf.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade PDF report<br/>"
         "python build_report_docx.py &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;# Recompile publication-grade Word DOCX report"
     )
@@ -712,7 +681,7 @@ def build_cca_pdf(output_filename="Complex_Computing_Activity_Report.pdf"):
     # =========================================================
     # SECTION 7: REFERENCES
     # =========================================================
-    story.append(Paragraph("9. Academic References", section_heading))
+    story.append(Paragraph("8. Academic References", section_heading))
     refs = [
         "1. Al-Kindi, Abu Yusuf Ya'qub ibn Ishaq (c. 850 CE). <i>Risalah fi Istikhraj al-Mu'amma</i> (Manuscript on Deciphering Cryptographic Messages). House of Wisdom, Baghdad.",
         "2. Shannon, Claude E. (1949). 'Communication Theory of Secrecy Systems.' <i>Bell System Technical Journal</i>, 28(4), 656–715.",
